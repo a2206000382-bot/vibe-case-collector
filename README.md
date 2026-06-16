@@ -380,15 +380,15 @@ DAILY_BUDGET_CNY=0.2
 找到：
 
 ```env
-MIN_COMPLETENESS_SCORE=0.72
+MIN_COMPLETENESS_SCORE=0.82
 ```
 
-含义：完整度低于 72% 的候选案例不进入正式案例。
+含义：完整度低于 82% 的候选案例不进入正式案例。
 
 如果你想更严格，例如只要更完整的案例：
 
 ```env
-MIN_COMPLETENESS_SCORE=0.8
+MIN_COMPLETENESS_SCORE=0.9
 ```
 
 如果你想多收录一些，但允许更多“未披露”：

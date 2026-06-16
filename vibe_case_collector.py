@@ -166,7 +166,7 @@ def load_config(env_path: Path) -> Config:
         enable_enrichment=getenv_bool("ENABLE_ENRICHMENT", True),
         enrichment_results_per_case=getenv_int("ENRICHMENT_RESULTS_PER_CASE", 4),
         enrichment_source_chars=getenv_int("ENRICHMENT_SOURCE_CHARS", 1800),
-        min_completeness_score=getenv_float("MIN_COMPLETENESS_SCORE", 0.72),
+        min_completeness_score=getenv_float("MIN_COMPLETENESS_SCORE", 0.82),
         rejected_output=getenv_bool("WRITE_REJECTED_CANDIDATES", True),
     )
 
@@ -544,7 +544,29 @@ def normalize_list(value: Any) -> List[str]:
         items = [ensure_text(item) for item in value]
     else:
         items = re.split(r"[；;\n]+", ensure_text(value))
-    return [item.strip(" -") for item in items if item.strip(" -") and item != MISSING]
+    cleaned = [item.strip(" -") for item in items if item.strip(" -") and item != MISSING]
+    return [
+        item
+        for item in cleaned
+        if not any(marker in item for marker in INFERENCE_MARKERS)
+    ]
+
+
+def remove_fields_with_inferred_evidence(case: Dict[str, Any]) -> None:
+    evidence = "；".join(case.get("evidence_summary", []))
+    checks = {
+        "product_type": ("产品类型", "产品形态"),
+        "income_model": ("收入模式", "变现模式"),
+        "monthly_income": ("月收入", "MRR", "ARR"),
+        "ai_tools_used": ("AI工具", "使用的AI工具"),
+        "development_time": ("开发时间", "上线周期", "MVP"),
+        "solo_project": ("单人项目", "团队规模"),
+    }
+    for field, labels in checks.items():
+        for label in labels:
+            if re.search(rf"{re.escape(label)}[^；。\n]*({'|'.join(INFERENCE_MARKERS)})", evidence):
+                case[field] = MISSING
+                break
 
 
 def has_public_link(text: str) -> bool:
@@ -662,6 +684,8 @@ def sanitize_case(raw: Dict[str, Any], case_id: int, fallback_url: str) -> Optio
     else:
         merged_missing = list(dict.fromkeys([*sanitized["missing_fields"], *calculated_missing]))
         sanitized["missing_fields"] = merged_missing
+    remove_fields_with_inferred_evidence(sanitized)
+    sanitized["missing_fields"] = missing_field_names(sanitized)
     sanitized["completeness_score"] = completeness_score(sanitized)
     return sanitized
 
