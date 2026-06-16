@@ -72,6 +72,14 @@ python --version
 
 如果能看到类似 `Python 3.11.8`，说明已安装。
 
+如果提示找不到 `python`，再试一次：
+
+```bash
+python3 --version
+```
+
+如果 `python3` 能显示版本号，后面教程里的 `python` 都可以替换成 `python3`。
+
 如果提示找不到 Python：
 
 1. 打开浏览器。
@@ -86,6 +94,12 @@ python --version
 
 ```bash
 python -m venv .venv
+```
+
+如果你的电脑只识别 `python3`，就输入：
+
+```bash
+python3 -m venv .venv
 ```
 
 Windows 用户继续输入：
@@ -108,6 +122,12 @@ source .venv/bin/activate
 
 ```bash
 pip install -r requirements.txt
+```
+
+如果提示找不到 `pip`，使用：
+
+```bash
+python3 -m pip install -r requirements.txt
 ```
 
 等它运行结束，不要中途关闭窗口。
@@ -137,6 +157,12 @@ LLM_API_KEY=你的真实APIKey
 
 ```bash
 python vibe_case_collector.py
+```
+
+如果你的电脑只识别 `python3`，就输入：
+
+```bash
+python3 vibe_case_collector.py
 ```
 
 运行结束后，打开左侧的 `outputs` 文件夹，可以看到：
@@ -348,6 +374,16 @@ RUN_TIME=22:00
 原因：电脑没有安装 Python，或安装时没有加入 PATH。
 
 修复：
+
+1. 先试试：
+
+```bash
+python3 --version
+```
+
+如果能显示版本，后续命令把 `python` 换成 `python3` 即可。
+
+如果仍然找不到：
 
 1. 重新安装 Python。
 2. 安装时勾选 `Add python.exe to PATH`。
