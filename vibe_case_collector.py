@@ -70,6 +70,10 @@ CASE_FIELDS = (
     "solo_project",
     "risks",
     "opportunities",
+    "evidence_summary",
+    "missing_fields",
+    "completeness_score",
+    "verification_notes",
 )
 
 
@@ -92,6 +96,11 @@ class Config:
     output_dir: Path
     run_time: str
     exchange_rates: str
+    enable_enrichment: bool
+    enrichment_results_per_case: int
+    enrichment_source_chars: int
+    min_completeness_score: float
+    rejected_output: bool
 
 
 def getenv_str(name: str, default: str = "") -> str:
@@ -112,6 +121,11 @@ def getenv_float(name: str, default: float) -> float:
         return float(raw)
     except ValueError:
         return default
+
+
+def getenv_bool(name: str, default: bool) -> bool:
+    raw = getenv_str(name, str(default)).lower()
+    return raw in {"1", "true", "yes", "y", "on"}
 
 
 def split_keywords(raw: str) -> List[str]:
@@ -148,6 +162,11 @@ def load_config(env_path: Path) -> Config:
         output_dir=Path(getenv_str("OUTPUT_DIR", "outputs")),
         run_time=getenv_str("RUN_TIME", "09:00"),
         exchange_rates=getenv_str("EXCHANGE_RATES", "USD:7.2,EUR:7.8,GBP:9.2"),
+        enable_enrichment=getenv_bool("ENABLE_ENRICHMENT", True),
+        enrichment_results_per_case=getenv_int("ENRICHMENT_RESULTS_PER_CASE", 4),
+        enrichment_source_chars=getenv_int("ENRICHMENT_SOURCE_CHARS", 1800),
+        min_completeness_score=getenv_float("MIN_COMPLETENESS_SCORE", 0.72),
+        rejected_output=getenv_bool("WRITE_REJECTED_CANDIDATES", True),
     )
 
 
@@ -368,6 +387,10 @@ def build_extraction_prompt(
 - 解决痛点最多3条。
 - 风险点必须包含：合规风险、平台依赖风险、市场竞争风险、长期运营风险。
 - 机会点必须包含：横向扩展场景、纵向功能深化、B端企业转化、细分生态位卡位。
+- 每个非“未披露”的关键结论都应来自材料中的明确证据；不要为了完整而推测。
+- evidence_summary 写成 3-6 条“字段：证据摘要（来源URL）”，用于人工复核。
+- missing_fields 列出仍然缺少公开证据的字段名；如果没有，返回空数组。
+- verification_notes 写出冲突、低可信、需要人工复核的地方；没有则写“无”。
 
 请只返回 JSON，不要 Markdown，不要解释。JSON 结构：
 {{
@@ -398,7 +421,10 @@ def build_extraction_prompt(
         "纵向功能深化": "未披露或具体机会",
         "B端企业转化": "未披露或具体机会",
         "细分生态位卡位": "未披露或具体机会"
-      }}
+      }},
+      "evidence_summary": ["字段：证据摘要（来源URL）"],
+      "missing_fields": ["缺少公开证据的字段名"],
+      "verification_notes": "冲突、低可信或需要人工复核的信息；没有则写无"
     }}
   ]
 }}
@@ -500,12 +526,81 @@ def normalize_nested(value: Any, keys: Iterable[str]) -> Dict[str, str]:
     return result
 
 
+def normalize_list(value: Any) -> List[str]:
+    if value in (None, "", MISSING):
+        return []
+    if isinstance(value, list):
+        items = [ensure_text(item) for item in value]
+    else:
+        items = re.split(r"[；;\n]+", ensure_text(value))
+    return [item.strip(" -") for item in items if item.strip(" -") and item != MISSING]
+
+
 def has_public_link(text: str) -> bool:
     return bool(re.search(r"https?://", text))
 
 
 def normalize_product_key(name: str) -> str:
     return re.sub(r"[^a-z0-9\u4e00-\u9fff]+", "", name.lower())
+
+
+def is_missing_value(value: Any) -> bool:
+    if value in (None, "", MISSING):
+        return True
+    if isinstance(value, str):
+        return value.strip() in {"", MISSING}
+    if isinstance(value, list):
+        return len(value) == 0
+    if isinstance(value, dict):
+        return all(is_missing_value(item) for item in value.values())
+    return False
+
+
+def missing_field_names(case: Dict[str, Any]) -> List[str]:
+    checks = {
+        "创始人姓名+背景": case.get("founder_background"),
+        "编程背景": case.get("coding_background"),
+        "产品类型": case.get("product_type"),
+        "产品用途": case.get("product_usage"),
+        "目标人群": case.get("target_users"),
+        "解决痛点": case.get("pain_points"),
+        "收入模式": case.get("income_model"),
+        "月收入": case.get("monthly_income"),
+        "使用的AI工具": case.get("ai_tools_used"),
+        "开发时间": case.get("development_time"),
+        "是否单人项目": case.get("solo_project"),
+    }
+    return [name for name, value in checks.items() if is_missing_value(value)]
+
+
+def completeness_score(case: Dict[str, Any]) -> float:
+    weights = {
+        "product_name": 1.0,
+        "founder_background": 1.0,
+        "coding_background": 0.8,
+        "product_type": 0.8,
+        "product_usage": 1.0,
+        "target_users": 0.8,
+        "pain_points": 0.8,
+        "income_model": 1.0,
+        "monthly_income": 1.0,
+        "ai_tools_used": 1.0,
+        "development_time": 1.0,
+        "data_sources": 1.0,
+        "credibility": 0.6,
+        "solo_project": 0.8,
+    }
+    total = sum(weights.values())
+    got = 0.0
+    for field, weight in weights.items():
+        value = case.get(field)
+        if field == "data_sources":
+            present = not is_missing_value(value) and has_public_link(ensure_text(value))
+        else:
+            present = not is_missing_value(value)
+        if present:
+            got += weight
+    return round(got / total, 3)
 
 
 def sanitize_case(raw: Dict[str, Any], case_id: int, fallback_url: str) -> Optional[Dict[str, Any]]:
@@ -545,7 +640,18 @@ def sanitize_case(raw: Dict[str, Any], case_id: int, fallback_url: str) -> Optio
         "solo_project": solo_project,
         "risks": normalize_nested(raw.get("risks"), RISK_KEYS),
         "opportunities": normalize_nested(raw.get("opportunities"), OPPORTUNITY_KEYS),
+        "evidence_summary": normalize_list(raw.get("evidence_summary")),
+        "missing_fields": normalize_list(raw.get("missing_fields")),
+        "completeness_score": 0.0,
+        "verification_notes": ensure_text(raw.get("verification_notes", "无")),
     }
+    calculated_missing = missing_field_names(sanitized)
+    if not sanitized["missing_fields"]:
+        sanitized["missing_fields"] = calculated_missing
+    else:
+        merged_missing = list(dict.fromkeys([*sanitized["missing_fields"], *calculated_missing]))
+        sanitized["missing_fields"] = merged_missing
+    sanitized["completeness_score"] = completeness_score(sanitized)
     return sanitized
 
 
@@ -588,6 +694,179 @@ def extract_cases_from_result(
     return sanitized
 
 
+def source_block(result: Dict[str, str], page_text: str, max_chars: int) -> str:
+    return "\n".join(
+        [
+            f"标题：{result.get('title', '')}",
+            f"链接：{result.get('href', '')}",
+            f"摘要：{result.get('body', '')}",
+            "正文摘录：",
+            page_text[:max_chars],
+        ]
+    ).strip()
+
+
+def enrichment_queries(case: Dict[str, Any]) -> List[str]:
+    product = case["product_name"]
+    founder = case.get("founder_background", "")
+    founder_hint = "" if founder == MISSING else founder.split("，", 1)[0]
+    return [
+        f'"{product}" founder revenue MRR AI coding',
+        f'"{product}" "Vibe Coding" "Cursor" "Claude"',
+        f'"{product}" pricing revenue launch founder',
+        f'"{product}" {founder_hint} startup interview' if founder_hint else f'"{product}" startup interview',
+    ]
+
+
+def build_enrichment_prompt(
+    *,
+    existing_case: Dict[str, Any],
+    sources: List[str],
+    config: Config,
+) -> str:
+    source_text = "\n\n--- SOURCE ---\n\n".join(sources)
+    return f"""
+你是事实核验型创业案例研究员。请基于“已有案例草稿”和“追加公开来源材料”做二次补全与纠错。
+
+目标：
+- 提高字段完整度，但只能填入材料中有明确证据的信息。
+- 如果材料没有证据，继续填“未披露”，不要猜测。
+- 若追加来源推翻已有字段，请以追加来源为准，并在 verification_notes 说明。
+- 若数值冲突，字段值以“存疑：”开头并列出全部数值和来源。
+- 必须保留公开链接，data_sources 尽量列出多个来源。
+- evidence_summary 必须写 3-8 条，格式为“字段：证据摘要（来源URL）”。
+- missing_fields 必须列出仍缺公开证据的关键字段。
+
+字段约束：
+- 编程背景只能是：有、无、自学、未披露。
+- 产品类型只能是：SaaS订阅工具、本地客户端、网页插件、API服务、开源免费工具、未披露。
+- 收入模式只能使用这些表达或组合：SaaS月订阅、一次性买断、API按量收费、广告变现、企业定制服务、未披露。
+- 月收入必须换算为人民币并标注原始货币；没有公开月收入填“未披露”。汇率参考：{config.exchange_rates}。
+- 数据可信度只能是：★、★★、★★★、★★★★。
+- 是否单人项目只能写“是，团队规模：...”或“否，团队规模：...”或“未披露”。
+- 风险点和机会点可以基于公开资料及产品客观依赖做保守归纳；无依据填“未披露”。
+
+只返回 JSON，不要 Markdown。JSON 结构：
+{{
+  "case": {{
+    "product_name": "产品完整对外名称",
+    "founder_background": "创始人全名+背景/未披露",
+    "coding_background": "有/无/自学/未披露",
+    "product_type": "SaaS订阅工具/本地客户端/网页插件/API服务/开源免费工具/未披露",
+    "product_usage": "一句话精准概括核心功能",
+    "target_users": "目标人群",
+    "pain_points": ["痛点1", "痛点2", "痛点3"],
+    "income_model": "收入模式/未披露",
+    "monthly_income": "人民币换算+原始货币/存疑/未披露",
+    "ai_tools_used": "开发时使用的AI工具/未披露",
+    "development_time": "启动到上线MVP周期/未披露",
+    "data_sources": "来源名称+链接，多个来源用；分隔",
+    "credibility": "★/★★/★★★/★★★★",
+    "solo_project": "是，团队规模：1人 / 否，团队规模：... / 未披露",
+    "risks": {{
+      "合规风险": "未披露或具体风险",
+      "平台依赖风险": "未披露或具体风险",
+      "市场竞争风险": "未披露或具体风险",
+      "长期运营风险": "未披露或具体风险"
+    }},
+    "opportunities": {{
+      "横向扩展场景": "未披露或具体机会",
+      "纵向功能深化": "未披露或具体机会",
+      "B端企业转化": "未披露或具体机会",
+      "细分生态位卡位": "未披露或具体机会"
+    }},
+    "evidence_summary": ["字段：证据摘要（来源URL）"],
+    "missing_fields": ["仍缺公开证据的字段名"],
+    "verification_notes": "冲突、低可信或需要人工复核的信息；没有则写无"
+  }}
+}}
+
+已有案例草稿：
+{json.dumps(existing_case, ensure_ascii=False, indent=2)}
+
+追加公开来源材料：
+{source_text}
+""".strip()
+
+
+def call_llm_with_budget(
+    *,
+    prompt: str,
+    config: Config,
+    budget: TokenBudget,
+    keyword: str,
+    url: str,
+) -> Optional[Dict[str, Any]]:
+    input_tokens = approx_tokens(prompt)
+    output_tokens = config.max_llm_output_tokens
+    if not budget.can_afford(input_tokens, output_tokens):
+        return None
+    parsed, usage = call_llm(prompt, config)
+    budget.record_call(
+        keyword=keyword,
+        url=url,
+        estimated_input_tokens=input_tokens,
+        reserved_output_tokens=output_tokens,
+        usage=usage,
+    )
+    return parsed
+
+
+def enrich_case(
+    *,
+    case: Dict[str, Any],
+    config: Config,
+    budget: TokenBudget,
+) -> Dict[str, Any]:
+    if not config.enable_enrichment or budget.stopped:
+        return case
+
+    sources: List[str] = []
+    seen_urls: set[str] = set()
+    for query in enrichment_queries(case):
+        if budget.stopped or len(sources) >= config.enrichment_results_per_case:
+            break
+        try:
+            results = search_web(query, config)
+        except Exception as exc:  # noqa: BLE001
+            print(f"补充检索失败：{query}；原因：{exc}", file=sys.stderr)
+            continue
+        for result in results:
+            url = result.get("href", "")
+            if (
+                not url
+                or url in seen_urls
+                or urlparse(url).scheme not in {"http", "https"}
+            ):
+                continue
+            seen_urls.add(url)
+            page_text = fetch_page_text(url, config)
+            sources.append(source_block(result, page_text, config.enrichment_source_chars))
+            if len(sources) >= config.enrichment_results_per_case:
+                break
+
+    if not sources:
+        return case
+
+    prompt = build_enrichment_prompt(existing_case=case, sources=sources, config=config)
+    try:
+        parsed = call_llm_with_budget(
+            prompt=prompt,
+            config=config,
+            budget=budget,
+            keyword=f"enrich:{case['product_name']}",
+            url=";".join(sorted(seen_urls)[:3]),
+        )
+    except Exception as exc:  # noqa: BLE001
+        print(f"案例补全失败：{case['product_name']}；原因：{exc}", file=sys.stderr)
+        return case
+
+    if not parsed or not isinstance(parsed.get("case"), dict):
+        return case
+    enriched = sanitize_case(parsed["case"], case.get("case_id", 0), case.get("data_sources", ""))
+    return enriched or case
+
+
 def format_pain_points(value: List[str] | str) -> str:
     if value == MISSING or not value:
         return MISSING
@@ -601,6 +880,14 @@ def format_nested(title: str, data: Dict[str, str], keys: Iterable[str]) -> str:
     for key in keys:
         lines.append(f"   - {key}：{data.get(key, MISSING)}")
     return "\n".join(lines)
+
+
+def format_list_field(value: List[str] | str) -> str:
+    if not value or value == MISSING:
+        return MISSING
+    if isinstance(value, str):
+        return value
+    return "；".join(value) if value else MISSING
 
 
 def format_case(case: Dict[str, Any]) -> str:
@@ -622,11 +909,21 @@ def format_case(case: Dict[str, Any]) -> str:
         f"15. 是否单人项目：{case['solo_project']}",
         format_nested("16. 风险点（四类各1条，缺一不可）", case["risks"], RISK_KEYS),
         format_nested("17. 机会点（四类各1条，缺一不可）", case["opportunities"], OPPORTUNITY_KEYS),
+        f"18. 公开证据摘要：{format_list_field(case.get('evidence_summary', []))}",
+        f"19. 仍缺失字段：{format_list_field(case.get('missing_fields', []))}",
+        f"20. 数据完整度评分：{case.get('completeness_score', 0):.0%}",
+        f"21. 复核说明：{case.get('verification_notes', MISSING)}",
     ]
     return "\n".join(lines)
 
 
-def write_txt(cases: List[Dict[str, Any]], path: Path, run_date: str, budget: TokenBudget) -> None:
+def write_txt(
+    cases: List[Dict[str, Any]],
+    path: Path,
+    run_date: str,
+    budget: TokenBudget,
+    rejected_cases: Optional[List[Dict[str, Any]]] = None,
+) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     header = [
         f"Vibe Coding独立创业案例自动采集报告",
@@ -638,10 +935,21 @@ def write_txt(cases: List[Dict[str, Any]], path: Path, run_date: str, budget: To
     if not cases:
         header.append("本次未检索到同时满足“真实落地、公开可查证、字段可溯源”的案例。")
     body = "\n\n".join(format_case(case) for case in cases)
-    path.write_text("\n".join(header) + body + "\n", encoding="utf-8")
+    rejected_body = ""
+    if rejected_cases:
+        rejected_body = "\n\n--- 信息不足候选，未进入正式案例 ---\n\n" + "\n\n".join(
+            format_case(case) for case in rejected_cases
+        )
+    path.write_text("\n".join(header) + body + rejected_body + "\n", encoding="utf-8")
 
 
-def write_docx(cases: List[Dict[str, Any]], path: Path, run_date: str, budget: TokenBudget) -> None:
+def write_docx(
+    cases: List[Dict[str, Any]],
+    path: Path,
+    run_date: str,
+    budget: TokenBudget,
+    rejected_cases: Optional[List[Dict[str, Any]]] = None,
+) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     document = Document()
     document.add_heading("Vibe Coding独立创业案例自动采集报告", 0)
@@ -654,18 +962,27 @@ def write_docx(cases: List[Dict[str, Any]], path: Path, run_date: str, budget: T
         document.add_heading(f"案例 {case['case_id']}：{case['product_name']}", level=1)
         for line in format_case(case).splitlines():
             document.add_paragraph(line)
+    if rejected_cases:
+        document.add_heading("信息不足候选，未进入正式案例", level=1)
+        for case in rejected_cases:
+            document.add_heading(f"候选：{case['product_name']}", level=2)
+            for line in format_case(case).splitlines():
+                document.add_paragraph(line)
     document.save(path)
 
 
-def collect_cases(config: Config, run_date: str, max_cases: Optional[int]) -> tuple[List[Dict[str, Any]], TokenBudget]:
+def collect_cases(
+    config: Config, run_date: str, max_cases: Optional[int]
+) -> tuple[List[Dict[str, Any]], List[Dict[str, Any]], TokenBudget]:
     budget = TokenBudget(config, Path(".run_state"), run_date)
     all_cases: List[Dict[str, Any]] = []
+    rejected_cases: List[Dict[str, Any]] = []
     seen: set[str] = set()
     pages_examined = 0
 
     if not config.llm_api_key:
         print("LLM_API_KEY 为空：将只生成空报告，不调用付费API。", file=sys.stderr)
-        return all_cases, budget
+        return all_cases, rejected_cases, budget
 
     for keyword in config.keywords:
         if budget.stopped:
@@ -704,13 +1021,27 @@ def collect_cases(config: Config, run_date: str, max_cases: Optional[int]) -> tu
                 if not key or key in seen:
                     continue
                 seen.add(key)
+                item = enrich_case(case=item, config=config, budget=budget)
+                item["completeness_score"] = completeness_score(item)
+                item["missing_fields"] = missing_field_names(item)
+                if item["completeness_score"] < config.min_completeness_score:
+                    item["case_id"] = len(rejected_cases) + 1
+                    rejected_cases.append(item)
+                    print(
+                        f"跳过信息不足候选：{item['product_name']} "
+                        f"（完整度 {item['completeness_score']:.0%}）"
+                    )
+                    continue
                 item["case_id"] = len(all_cases) + 1
                 all_cases.append(item)
-                print(f"收录案例：{item['case_id']} {item['product_name']}")
+                print(
+                    f"收录案例：{item['case_id']} {item['product_name']} "
+                    f"（完整度 {item['completeness_score']:.0%}）"
+                )
                 if max_cases and len(all_cases) >= max_cases:
-                    return all_cases, budget
+                    return all_cases, rejected_cases, budget
 
-    return all_cases, budget
+    return all_cases, rejected_cases, budget
 
 
 def parse_run_time(value: str) -> dt.time:
@@ -733,13 +1064,14 @@ def run_once(args: argparse.Namespace) -> None:
     env_path = Path(args.env)
     config = load_config(env_path)
     run_date = args.date or dt.date.today().isoformat()
-    cases, budget = collect_cases(config, run_date, args.max_cases)
+    cases, rejected_cases, budget = collect_cases(config, run_date, args.max_cases)
 
     output_dir = config.output_dir
     txt_path = output_dir / f"vibe_coding_cases_{run_date}.txt"
     docx_path = output_dir / f"vibe_coding_cases_{run_date}.docx"
-    write_txt(cases, txt_path, run_date, budget)
-    write_docx(cases, docx_path, run_date, budget)
+    rejected_for_output = rejected_cases if config.rejected_output else None
+    write_txt(cases, txt_path, run_date, budget, rejected_for_output)
+    write_docx(cases, docx_path, run_date, budget, rejected_for_output)
     print(f"TXT已生成：{txt_path}")
     print(f"DOCX已生成：{docx_path}")
 
