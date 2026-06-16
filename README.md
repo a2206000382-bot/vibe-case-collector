@@ -233,6 +233,12 @@ source .venv/bin/activate
 python vibe_case_collector.py --loop
 ```
 
+macOS / Linux 用户也可以直接输入：
+
+```bash
+bash run_cursor_loop.sh
+```
+
 6. 保持 Cursor 和这个命令行窗口不要关闭。
 
 脚本会读取 `.env` 里的：
@@ -312,6 +318,14 @@ C:\Users\你的用户名\Desktop\vibe-case-collector
 
 6. 点击：`下一步`
 7. 点击：`完成`
+
+如果你想更简单，也可以把 `程序或脚本` 直接填成项目里的批处理文件：
+
+```text
+C:\Users\你的用户名\Desktop\vibe-case-collector\run_once_windows.bat
+```
+
+这种方式不需要填写 `添加参数`，但 `起始于` 仍然建议填写项目文件夹路径。
 
 ### 第 6 步：测试任务
 
