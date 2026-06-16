@@ -33,6 +33,7 @@ except ImportError:  # pragma: no cover - compatibility for older installs
 
 
 MISSING = "未披露"
+INFERENCE_MARKERS = ("推断", "猜测", "可能", "似乎", "应该", "疑似")
 TRUST_LEVELS = {"★", "★★", "★★★", "★★★★"}
 CODING_BACKGROUNDS = {"有", "无", "自学", MISSING}
 PRODUCT_TYPES = {
@@ -376,6 +377,7 @@ def build_extraction_prompt(
 - 纯概念、教程文章、工具清单、没有产品名称或没有公开来源链接的内容，返回空数组。
 - 任一字段没有公开可查资料，必须填“未披露”。
 - 同一字段出现矛盾数值，字段值以“存疑：...”开头，并列出全部不同数据。
+- 禁止使用“推断/可能/猜测/似乎”等表述填关键字段；如果只能推断，必须填“未披露”。
 
 字段约束：
 - 编程背景只能是：有、无、自学、未披露。
@@ -506,6 +508,15 @@ def normalize_income_model(value: Any) -> str:
     return "；".join(parts) if parts else MISSING
 
 
+def remove_inferred_value(value: Any) -> str:
+    text = ensure_text(value)
+    if text == MISSING:
+        return MISSING
+    if any(marker in text for marker in INFERENCE_MARKERS) and not text.startswith("存疑"):
+        return MISSING
+    return text
+
+
 def normalize_pain_points(value: Any) -> List[str] | str:
     if value in (None, "", MISSING):
         return MISSING
@@ -625,16 +636,16 @@ def sanitize_case(raw: Dict[str, Any], case_id: int, fallback_url: str) -> Optio
     sanitized = {
         "case_id": case_id,
         "product_name": product_name,
-        "founder_background": ensure_text(raw.get("founder_background")),
+        "founder_background": remove_inferred_value(raw.get("founder_background")),
         "coding_background": normalize_enum(raw.get("coding_background"), CODING_BACKGROUNDS),
         "product_type": normalize_enum(raw.get("product_type"), PRODUCT_TYPES),
-        "product_usage": ensure_text(raw.get("product_usage")),
-        "target_users": ensure_text(raw.get("target_users")),
+        "product_usage": remove_inferred_value(raw.get("product_usage")),
+        "target_users": remove_inferred_value(raw.get("target_users")),
         "pain_points": normalize_pain_points(raw.get("pain_points")),
         "income_model": normalize_income_model(raw.get("income_model")),
-        "monthly_income": ensure_text(raw.get("monthly_income")),
-        "ai_tools_used": ensure_text(raw.get("ai_tools_used")),
-        "development_time": ensure_text(raw.get("development_time")),
+        "monthly_income": remove_inferred_value(raw.get("monthly_income")),
+        "ai_tools_used": remove_inferred_value(raw.get("ai_tools_used")),
+        "development_time": remove_inferred_value(raw.get("development_time")),
         "data_sources": data_sources,
         "credibility": credibility,
         "solo_project": solo_project,
@@ -731,6 +742,7 @@ def build_enrichment_prompt(
 目标：
 - 提高字段完整度，但只能填入材料中有明确证据的信息。
 - 如果材料没有证据，继续填“未披露”，不要猜测。
+- 禁止用“推断/可能/猜测/似乎”等不确定表述填关键字段；只能推断时填“未披露”。
 - 若追加来源推翻已有字段，请以追加来源为准，并在 verification_notes 说明。
 - 若数值冲突，字段值以“存疑：”开头并列出全部数值和来源。
 - 必须保留公开链接，data_sources 尽量列出多个来源。
