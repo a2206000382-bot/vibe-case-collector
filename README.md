@@ -278,6 +278,16 @@ cp .env.example .env
 2. 检查 `LLM_MODEL`。
 3. 确认接口是 `chat/completions` 兼容格式。
 
+### 报错：`The read operation timed out`
+
+通常是网页或大模型接口响应较慢。
+
+修复：
+
+1. 打开 `.env`。
+2. 把 `REQUEST_TIMEOUT_SECONDS=60` 改成更大的数字，例如 `120`。
+3. 如果仍然超时，调小 `MAX_PAGES_TO_FETCH` 或 `PAGE_TEXT_MAX_CHARS`。
+
 ### 提示：`API预算不足`
 
 说明继续调用会超过 `.env` 里设置的费用上限。

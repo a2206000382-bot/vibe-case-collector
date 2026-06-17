@@ -171,7 +171,7 @@ class CollectorConfig:
             max_pages_to_fetch=get_int_env("MAX_PAGES_TO_FETCH", 12),
             max_cases_per_day=get_int_env("MAX_CASES_PER_DAY", 8),
             page_text_max_chars=get_int_env("PAGE_TEXT_MAX_CHARS", 6000),
-            request_timeout_seconds=get_int_env("REQUEST_TIMEOUT_SECONDS", 20),
+            request_timeout_seconds=get_int_env("REQUEST_TIMEOUT_SECONDS", 60),
             output_dir=output_dir,
             schedule_time=os.getenv("SCHEDULE_TIME", "02:00").strip(),
         )
