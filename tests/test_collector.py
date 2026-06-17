@@ -20,6 +20,7 @@ def make_config(tmp_path: Path) -> Config:
         run_at_hhmm="09:00",
         search_provider="duckduckgo",
         keywords=["built with Cursor startup"],
+        seed_sources=[],
         max_results_per_keyword=5,
         fetch_result_pages=False,
         max_fetched_pages=0,

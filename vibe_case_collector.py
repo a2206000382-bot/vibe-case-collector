@@ -108,6 +108,7 @@ class Config:
     run_at_hhmm: str
     search_provider: str
     keywords: list[str]
+    seed_sources: list[tuple[str, str]]
     max_results_per_keyword: int
     fetch_result_pages: bool
     max_fetched_pages: int
@@ -149,6 +150,7 @@ class Config:
             run_at_hhmm=os.getenv("RUN_AT_HHMM", "09:00"),
             search_provider=os.getenv("SEARCH_PROVIDER", "duckduckgo").strip().lower(),
             keywords=keywords,
+            seed_sources=parse_seed_sources(os.getenv("SEED_SOURCE_URLS", "")),
             max_results_per_keyword=int(os.getenv("MAX_RESULTS_PER_KEYWORD", "5") or "5"),
             fetch_result_pages=str_to_bool(os.getenv("FETCH_RESULT_PAGES", "true"), True),
             max_fetched_pages=int(os.getenv("MAX_FETCHED_PAGES", "18") or "18"),
@@ -166,6 +168,25 @@ class Config:
             gbp_to_cny=float(os.getenv("GBP_TO_CNY", "9.20") or "9.20"),
             eur_to_cny=float(os.getenv("EUR_TO_CNY", "7.80") or "7.80"),
         )
+
+
+def parse_seed_sources(value: str) -> list[tuple[str, str]]:
+    """Parse optional public seed sources.
+
+    Format:
+    - title@@https://example.com/article
+    - https://example.com/article
+    """
+    sources: list[tuple[str, str]] = []
+    for item in split_env_list(value):
+        if "@@" in item:
+            title, url = item.split("@@", 1)
+        else:
+            title, url = "", item
+        url = url.strip()
+        if url.startswith(("http://", "https://")):
+            sources.append((title.strip(), url))
+    return sources
 
 
 class BudgetController:
@@ -831,6 +852,19 @@ def gather_hits(config: Config) -> tuple[list[SearchHit], list[str]]:
             all_hits.append(hit)
         time.sleep(config.request_delay_seconds)
 
+    for title, url in config.seed_sources:
+        if url in seen_urls:
+            continue
+        seen_urls.add(url)
+        all_hits.append(
+            SearchHit(
+                query="SEED_SOURCE_URLS",
+                title=title or "公开种子来源",
+                url=url,
+                snippet="来自 .env 配置的公开可访问来源，用于搜索引擎返回为空或结果不稳定时兜底复核。",
+            )
+        )
+
     if config.fetch_result_pages:
         for hit in all_hits:
             if fetched_count >= config.max_fetched_pages:
@@ -839,6 +873,8 @@ def gather_hits(config: Config) -> tuple[list[SearchHit], list[str]]:
                 continue
             try:
                 hit.page_text = client.fetch_page_text(hit.url)
+                if hit.title == "公开种子来源" and hit.page_text:
+                    hit.title = hit.page_text[:80]
                 fetched_count += 1
                 time.sleep(config.request_delay_seconds)
             except Exception as exc:  # noqa: BLE001

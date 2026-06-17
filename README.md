@@ -51,6 +51,14 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+如果终端提示 `python: command not found`，把上面所有 `python` 改成 `python3`：
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install -r requirements.txt
+```
+
 Windows 用户在 PowerShell 中激活虚拟环境时使用：
 
 ```powershell
@@ -132,6 +140,12 @@ DAILY_API_BUDGET_RMB=0.10
 
 ```bash
 python vibe_case_collector.py --env .env
+```
+
+如果你的电脑只能使用 `python3`，则运行：
+
+```bash
+python3 vibe_case_collector.py --env .env
 ```
 
 运行完成后会看到类似：
@@ -348,7 +362,22 @@ SEARCH_KEYWORDS_EN=vibe coding indie hacker|built with Cursor startup|...
 
 也用 `|` 分隔。
 
-### 8.3 修改预算
+### 8.3 修改公开种子来源
+
+如果搜索引擎当天返回结果很少，可以在 `.env` 里维护公开来源链接：
+
+```text
+SEED_SOURCE_URLS=标题@@https://example.com/article|另一个标题@@https://example.com/another
+```
+
+规则：
+
+- `标题` 用来帮助脚本识别产品名。
+- `@@` 后面放公开可访问链接。
+- 多条之间用 `|` 分隔。
+- 不确定的链接可以先放进种子来源，脚本会把信息不足的内容放入候选或线索，不会强行变正式案例。
+
+### 8.4 修改预算
 
 找到：
 
@@ -358,7 +387,7 @@ DAILY_API_BUDGET_RMB=0.10
 
 为了防止误扣费，程序内部会强制不超过 0.10 元人民币。
 
-### 8.4 修改搜索数量
+### 8.5 修改搜索数量
 
 找到：
 
