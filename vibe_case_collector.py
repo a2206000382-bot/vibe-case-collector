@@ -162,11 +162,20 @@ class CollectorConfig:
         thinking = os.getenv("LLM_THINKING", "").strip().lower()
         if not thinking and model == "kimi-k2.6":
             thinking = "disabled"
+        temperature_env = os.getenv("LLM_TEMPERATURE")
+        if temperature_env is not None:
+            llm_temperature = get_float_env("LLM_TEMPERATURE", 0.0)
+        elif model == "kimi-k2.6" and thinking == "disabled":
+            llm_temperature = 0.6
+        elif model == "kimi-k2.6":
+            llm_temperature = 1.0
+        else:
+            llm_temperature = 0.0
         return cls(
             api_key=os.getenv("LLM_API_KEY", "").strip(),
             api_url=os.getenv("OPENAI_COMPATIBLE_API_URL", "https://api.moonshot.cn/v1/chat/completions").strip(),
             model=model,
-            llm_temperature=get_float_env("LLM_TEMPERATURE", 0.0),
+            llm_temperature=llm_temperature,
             llm_thinking=thinking if thinking in {"enabled", "disabled"} else None,
             keywords=keywords,
             max_daily_api_budget_cny=get_float_env("MAX_DAILY_API_BUDGET_CNY", 0.1),
