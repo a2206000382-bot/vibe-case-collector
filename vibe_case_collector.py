@@ -10,6 +10,7 @@ and Word archives with the fixed Chinese template requested by the operator.
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import dataclasses
 import datetime as dt
 import json
@@ -953,6 +954,126 @@ def format_case(case: Dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def build_run_summary(
+    cases: List[Dict[str, Any]],
+    rejected_cases: Optional[List[Dict[str, Any]]],
+    budget: TokenBudget,
+) -> Dict[str, List[str]]:
+    rejected_cases = rejected_cases or []
+    formal_count = len(cases)
+    candidate_count = len(rejected_cases)
+    total_examined = formal_count + candidate_count
+    missing_counter: Counter[str] = Counter()
+    for item in [*cases, *rejected_cases]:
+        missing_counter.update(item.get("missing_fields", []) or [])
+
+    avg_score = 0.0
+    if total_examined:
+        avg_score = sum(
+            float(item.get("completeness_score", 0) or 0)
+            for item in [*cases, *rejected_cases]
+        ) / total_examined
+
+    logic_lines = [
+        "1. 本次运行先按配置关键词检索公开网页，再抓取页面正文，最后调用大模型抽取并校验字段。",
+        f"2. 正式案例门槛：完整度不低于 {budget.config.min_completeness_score:.0%}，低于门槛的内容进入“信息不足候选”。",
+        f"3. 预算控制：单日上限 {budget.config.daily_budget_cny} 元，当前累计已用 {budget.spent_cny:.6f} 元，剩余 {budget.remaining_cny():.6f} 元。",
+        f"4. 本次关键词数量：{len(budget.config.keywords)}；搜索渠道：{budget.config.search_provider}。",
+    ]
+
+    result_lines = [
+        f"1. 正式收录案例：{formal_count} 条。",
+        f"2. 信息不足候选：{candidate_count} 条。",
+        f"3. 参与质量评估的线索总数：{total_examined} 条。",
+        f"4. 平均完整度：{avg_score:.0%}。",
+    ]
+    if formal_count == 0 and candidate_count == 0:
+        result_lines.append("5. 本次没有形成可输出线索，建议降低完整度门槛或扩展关键词。")
+    elif formal_count == 0:
+        result_lines.append("5. 本次正式案例为 0，但已有候选线索，建议优先围绕候选产品名二次检索。")
+    else:
+        result_lines.append("5. 本次已有正式案例，建议继续补收入、开发周期和创始人背景等弱字段。")
+
+    if missing_counter:
+        top_missing = "、".join(
+            f"{name}({count})" for name, count in missing_counter.most_common(5)
+        )
+        result_lines.append(f"6. 高频缺失字段：{top_missing}。")
+
+    keyword_lines = suggest_next_keywords(cases, rejected_cases, missing_counter)
+    return {
+        "运行逻辑总结": logic_lines,
+        "抓取结果总结": result_lines,
+        "下一步关键词优化建议": keyword_lines,
+    }
+
+
+def suggest_next_keywords(
+    cases: List[Dict[str, Any]],
+    rejected_cases: List[Dict[str, Any]],
+    missing_counter: Counter[str],
+) -> List[str]:
+    product_names = [
+        item.get("product_name", "")
+        for item in [*cases, *rejected_cases]
+        if item.get("product_name") and item.get("product_name") != MISSING
+    ]
+    suggestions: List[str] = []
+    for name in product_names[:3]:
+        suggestions.extend(
+            [
+                f'"{name}" founder revenue',
+                f'"{name}" MRR ARR indie hacker',
+                f'"{name}" built with Cursor Claude',
+            ]
+        )
+
+    missing_names = set(missing_counter)
+    if {"月收入", "收入模式"} & missing_names:
+        suggestions.extend(
+            [
+                "vibe coding indie hacker revenue MRR",
+                "AI SaaS solo founder revenue dashboard",
+                "Cursor built SaaS monthly revenue",
+            ]
+        )
+    if {"创始人姓名+背景", "编程背景", "是否单人项目"} & missing_names:
+        suggestions.extend(
+            [
+                "vibe coding founder interview",
+                "solo founder built with Cursor story",
+                "AI tool founder no coding background",
+            ]
+        )
+    if {"使用的AI工具", "开发时间"} & missing_names:
+        suggestions.extend(
+            [
+                "built with Cursor Claude launch in days",
+                "Lovable Bolt.new Replit Agent startup case",
+                "AI coding tool MVP launch story",
+            ]
+        )
+
+    suggestions.extend(
+        [
+            "vibe coding indie hacker AI SaaS",
+            "built with Cursor startup case study",
+            "Lovable app revenue solo founder",
+            "Bolt.new startup case study",
+            "Replit Agent SaaS founder",
+        ]
+    )
+    deduped = list(dict.fromkeys(suggestions))
+    return [f"{idx}. {keyword}" for idx, keyword in enumerate(deduped[:12], 1)]
+
+
+def format_summary_sections(summary: Dict[str, List[str]]) -> str:
+    blocks = []
+    for title, lines in summary.items():
+        blocks.append(f"--- {title} ---\n" + "\n".join(lines))
+    return "\n\n".join(blocks)
+
+
 def write_txt(
     cases: List[Dict[str, Any]],
     path: Path,
@@ -976,7 +1097,13 @@ def write_txt(
         rejected_body = "\n\n--- 信息不足候选，未进入正式案例 ---\n\n" + "\n\n".join(
             format_case(case) for case in rejected_cases
         )
-    path.write_text("\n".join(header) + body + rejected_body + "\n", encoding="utf-8")
+    summary_body = "\n\n" + format_summary_sections(
+        build_run_summary(cases, rejected_cases, budget)
+    )
+    path.write_text(
+        "\n".join(header) + body + rejected_body + summary_body + "\n",
+        encoding="utf-8",
+    )
 
 
 def write_docx(
@@ -1004,6 +1131,11 @@ def write_docx(
             document.add_heading(f"候选：{case['product_name']}", level=2)
             for line in format_case(case).splitlines():
                 document.add_paragraph(line)
+    summary = build_run_summary(cases, rejected_cases, budget)
+    for title, lines in summary.items():
+        document.add_heading(title, level=1)
+        for line in lines:
+            document.add_paragraph(line)
     document.save(path)
 
 
@@ -1110,6 +1242,7 @@ def run_once(args: argparse.Namespace) -> None:
     write_docx(cases, docx_path, run_date, budget, rejected_for_output)
     print(f"TXT已生成：{txt_path}")
     print(f"DOCX已生成：{docx_path}")
+    print(format_summary_sections(build_run_summary(cases, rejected_for_output, budget)))
 
 
 def run_loop(args: argparse.Namespace) -> None:
