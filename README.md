@@ -54,6 +54,12 @@ python --version
 
 能看到 `Python 3.x.x` 就可以继续。
 
+如果提示 `python: command not found`，请把后续命令里的 `python` 改成 `python3`，例如：
+
+```bash
+python3 --version
+```
+
 ### 第 2 步：用 Cursor 打开项目
 
 1. 打开 Cursor。
@@ -92,6 +98,12 @@ LLM_MODEL=deepseek-chat
 
 ```bash
 python vibe_case_collector.py --once
+```
+
+如果你的电脑提示 `python: command not found`，请改用：
+
+```bash
+python3 vibe_case_collector.py --once
 ```
 
 运行完成后查看 `reports` 文件夹，会看到类似：
@@ -140,6 +152,12 @@ SCHEDULE_TIME=02:00
 
 ```bash
 python vibe_case_collector.py --daemon
+```
+
+如果 `python` 不可用，请改成：
+
+```bash
+python3 vibe_case_collector.py --daemon
 ```
 
 6. 不要关闭这个终端窗口，也不要让电脑关机。脚本会每天到点自动运行。
@@ -288,6 +306,12 @@ cp .env.example .env
 
 ```bash
 python -m unittest discover -s tests
+```
+
+如果 `python` 不可用，请运行：
+
+```bash
+python3 -m unittest discover -s tests
 ```
 
 看到 `OK` 表示字段模板和预算控制基础逻辑正常。
