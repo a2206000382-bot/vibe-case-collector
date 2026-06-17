@@ -312,6 +312,12 @@ def normalize_search_url(href: str) -> Optional[str]:
         else:
             return None
     parsed = parse.urlparse(href)
+    if parsed.netloc.lower().endswith("duckduckgo.com") and parsed.path.startswith("/l/"):
+        query = parse.parse_qs(parsed.query)
+        if "uddg" not in query:
+            return None
+        href = query["uddg"][0]
+        parsed = parse.urlparse(href)
     if parsed.scheme not in {"http", "https"} or not parsed.netloc:
         return None
     host = parsed.netloc.lower()
