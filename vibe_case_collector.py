@@ -1169,15 +1169,23 @@ def maybe_llm_review_cases(
 
 
 def call_openai_compatible(config: Config, prompt: str) -> dict[str, object]:
+    payload: dict[str, object] = {
+        "model": config.llm_model,
+        "messages": [{"role": "user", "content": prompt}],
+        "max_tokens": 700,
+    }
+    if config.llm_model.startswith("kimi-"):
+        # Kimi K2.x models only accept temperature=1. Disable thinking so the
+        # response stays concise JSON for this small report-review task.
+        payload["temperature"] = 1
+        payload["thinking"] = {"type": "disabled"}
+    else:
+        payload["temperature"] = 0
+
     response = requests.post(
         f"{config.api_base_url}/chat/completions",
         headers={"Authorization": f"Bearer {config.api_key}", "Content-Type": "application/json"},
-        json={
-            "model": config.llm_model,
-            "messages": [{"role": "user", "content": prompt}],
-            "temperature": 0,
-            "max_tokens": 700,
-        },
+        json=payload,
         timeout=config.http_timeout_seconds,
     )
     response.raise_for_status()

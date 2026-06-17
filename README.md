@@ -106,7 +106,11 @@ Copy-Item .env.example .env
 
 ```text
 OPENAI_API_KEY=你的key粘贴在这里
+OPENAI_BASE_URL=https://api.moonshot.cn/v1
+LLM_MODEL=kimi-k2.6
 ```
+
+说明：Kimi 平台的模型名通常不是单独的 `kimi`，而是类似 `kimi-k2.6`、`kimi-k2.7-code`。如果不确定，可以先使用 `.env.example` 里的 `kimi-k2.6`。
 
 ### 3.3 默认是否会调用大模型？
 
