@@ -1175,9 +1175,9 @@ def call_openai_compatible(config: Config, prompt: str) -> dict[str, object]:
         "max_tokens": 700,
     }
     if config.llm_model.startswith("kimi-"):
-        # Kimi K2.x models only accept temperature=1. Disable thinking so the
+        # Kimi K2.x models require provider-specific temperature values. Disable thinking so the
         # response stays concise JSON for this small report-review task.
-        payload["temperature"] = 1
+        payload["temperature"] = 0.6
         payload["thinking"] = {"type": "disabled"}
     else:
         payload["temperature"] = 0
