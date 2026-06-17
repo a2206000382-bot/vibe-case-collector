@@ -137,6 +137,7 @@ class CollectorConfig:
     api_url: str
     model: str
     llm_temperature: float
+    llm_thinking: Optional[str]
     keywords: List[str]
     max_daily_api_budget_cny: float
     input_price_cny_per_1m: float
@@ -157,11 +158,16 @@ class CollectorConfig:
             raise ValueError("请在 .env 中配置 SEARCH_KEYWORDS，多个关键词用英文分号 ; 分隔。")
 
         output_dir = Path(output_dir_override or os.getenv("OUTPUT_DIR", "reports")).expanduser()
+        model = os.getenv("LLM_MODEL", "kimi-k2.6").strip()
+        thinking = os.getenv("LLM_THINKING", "").strip().lower()
+        if not thinking and model == "kimi-k2.6":
+            thinking = "disabled"
         return cls(
             api_key=os.getenv("LLM_API_KEY", "").strip(),
             api_url=os.getenv("OPENAI_COMPATIBLE_API_URL", "https://api.moonshot.cn/v1/chat/completions").strip(),
-            model=os.getenv("LLM_MODEL", "kimi-k2.6").strip(),
+            model=model,
             llm_temperature=get_float_env("LLM_TEMPERATURE", 0.0),
+            llm_thinking=thinking if thinking in {"enabled", "disabled"} else None,
             keywords=keywords,
             max_daily_api_budget_cny=get_float_env("MAX_DAILY_API_BUDGET_CNY", 0.1),
             input_price_cny_per_1m=get_float_env("INPUT_TOKEN_PRICE_CNY_PER_1M", 2.0),
@@ -480,6 +486,8 @@ def call_openai_compatible_api(
         "temperature": config.llm_temperature,
         "max_tokens": config.llm_max_output_tokens,
     }
+    if config.llm_thinking:
+        payload["thinking"] = {"type": config.llm_thinking}
     body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
     req = request.Request(
         config.api_url,
