@@ -110,19 +110,14 @@ OPENAI_API_KEY=你的key粘贴在这里
 
 ### 3.3 默认是否会调用大模型？
 
-默认不会：
-
-```text
-USE_LLM_EXTRACTION=false
-```
-
-这样脚本只用公开搜索网页和本地规则整理，API 花费为 0。
-
-如果你想让大模型在预算内辅助整理，把它改成：
+默认会。后续每一次检索都会调用 API 做一次输出前整理复核：
 
 ```text
 USE_LLM_EXTRACTION=true
+REQUIRE_LLM_EXTRACTION=true
 ```
+
+如果没有填写 `OPENAI_API_KEY`，程序会直接停止并提示你补 key，避免误以为已经完成 API 辅助整理。
 
 预算仍会被程序强制锁在每天不超过：
 
@@ -156,12 +151,6 @@ DOC 已生成：.../reports/vibe_cases_2026-06-17.doc
 ```
 
 打开左侧 `reports` 文件夹，即可查看每日报告。
-
-如果只是想用示例配置测试，不填 API key，也可以运行：
-
-```bash
-python vibe_case_collector.py --env .env.example
-```
 
 ---
 

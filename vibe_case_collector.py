@@ -115,6 +115,7 @@ class Config:
     http_timeout_seconds: float
     request_delay_seconds: float
     use_llm_extraction: bool
+    require_llm_extraction: bool
     api_key: str
     api_base_url: str
     llm_model: str
@@ -157,6 +158,7 @@ class Config:
             http_timeout_seconds=float(os.getenv("HTTP_TIMEOUT_SECONDS", "12") or "12"),
             request_delay_seconds=float(os.getenv("REQUEST_DELAY_SECONDS", "0.8") or "0.8"),
             use_llm_extraction=str_to_bool(os.getenv("USE_LLM_EXTRACTION", "false"), False),
+            require_llm_extraction=str_to_bool(os.getenv("REQUIRE_LLM_EXTRACTION", "false"), False),
             api_key=os.getenv("OPENAI_API_KEY", "").strip(),
             api_base_url=os.getenv("OPENAI_BASE_URL", "https://api.deepseek.com").rstrip("/"),
             llm_model=os.getenv("LLM_MODEL", "deepseek-chat").strip(),
@@ -1085,7 +1087,88 @@ def maybe_llm_extract_extra_clues(
     return extra_cases
 
 
-def call_openai_compatible(config: Config, prompt: str) -> dict[str, str]:
+def maybe_llm_review_cases(
+    cases: list[CaseRecord],
+    config: Config,
+    budget: BudgetController,
+) -> str:
+    """Run a mandatory/optional API-assisted organization pass before output."""
+    if not config.use_llm_extraction:
+        return "API辅助整理：未启用（USE_LLM_EXTRACTION=false）。"
+    if not config.api_key:
+        message = "API辅助整理失败：已启用 USE_LLM_EXTRACTION，但 .env 缺少 OPENAI_API_KEY。"
+        if config.require_llm_extraction:
+            raise ValueError(message)
+        return message
+
+    compact_cases = []
+    for case in cases:
+        compact_cases.append(
+            {
+                "编号": case.case_id,
+                "级别": case.level,
+                "产品": case.product_name,
+                "用途": case.purpose[:180],
+                "收入": case.revenue[:160],
+                "来源": extract_urls(case.sources)[:3],
+                "缺失字段": case.missing_fields,
+            }
+        )
+
+    prompt = textwrap.dedent(
+        f"""
+        你是 Vibe Coding 案例报告整理复核助手。只基于下面已抽取的结构化内容做整理检查，
+        不要新增未经来源支持的事实。请输出 JSON 对象，字段固定为：
+        {{
+          "status": "ok/needs_review",
+          "summary": "一句话说明本轮整理结论",
+          "quality_warnings": ["最多3条风险或缺口"],
+          "next_keywords": ["最多5个下一轮建议关键词"],
+          "agent_instruction_suggestion": "一句话建议如何优化后续Agent Instructions"
+        }}
+
+        已抽取案例：
+        {json.dumps(compact_cases, ensure_ascii=False)}
+        """
+    ).strip()
+    estimated_cost = budget.quote(prompt, expected_output_tokens=700)
+    if not budget.can_spend(estimated_cost):
+        message = f"API辅助整理失败：预计费用会超过 {budget.limit_rmb:.2f} 元人民币预算上限。"
+        budget.record_skip()
+        if config.require_llm_extraction:
+            raise ValueError(message)
+        return message
+
+    try:
+        data = call_openai_compatible(config, prompt)
+        budget.record(estimated_cost)
+    except Exception as exc:  # noqa: BLE001
+        budget.record_skip()
+        message = f"API辅助整理失败：{exc}"
+        if config.require_llm_extraction:
+            raise RuntimeError(message) from exc
+        return message
+
+    warnings = data.get("quality_warnings", "")
+    next_keywords_value = data.get("next_keywords", "")
+    if isinstance(warnings, list):
+        warning_text = "；".join(str(item) for item in warnings[:3])
+    else:
+        warning_text = str(warnings)
+    if isinstance(next_keywords_value, list):
+        keyword_text = "；".join(str(item) for item in next_keywords_value[:5])
+    else:
+        keyword_text = str(next_keywords_value)
+    return (
+        f"API辅助整理：已调用 {config.llm_model} 完成输出前复核。"
+        f"结论：{data.get('summary', UNKNOWN)}"
+        f" 风险提示：{warning_text or UNKNOWN}"
+        f" 下一轮关键词：{keyword_text or UNKNOWN}"
+        f" Agent Instructions建议：{data.get('agent_instruction_suggestion', UNKNOWN)}"
+    )
+
+
+def call_openai_compatible(config: Config, prompt: str) -> dict[str, object]:
     response = requests.post(
         f"{config.api_base_url}/chat/completions",
         headers={"Authorization": f"Bearer {config.api_key}", "Content-Type": "application/json"},
@@ -1104,22 +1187,30 @@ def call_openai_compatible(config: Config, prompt: str) -> dict[str, str]:
     parsed = json.loads(content)
     if not isinstance(parsed, dict):
         raise ValueError("LLM返回不是JSON对象")
-    return {str(key): str(value) for key, value in parsed.items()}
+    return {str(key): value for key, value in parsed.items()}
 
 
-def case_from_llm_json(data: dict[str, str], hit: SearchHit) -> CaseRecord:
+def as_text(value: object) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, (list, tuple)):
+        return "；".join(str(item) for item in value)
+    return str(value)
+
+
+def case_from_llm_json(data: dict[str, object], hit: SearchHit) -> CaseRecord:
     return make_case(
         level="今日线索",
-        product_name=data.get("product_name") or extract_product_name_from_hit(hit),
-        founder_and_coding_background=f"{data.get('founder') or UNKNOWN}；编程背景：{UNKNOWN}",
+        product_name=as_text(data.get("product_name")) or extract_product_name_from_hit(hit),
+        founder_and_coding_background=f"{as_text(data.get('founder')) or UNKNOWN}；编程背景：{UNKNOWN}",
         product_type=UNKNOWN,
-        purpose=f"从用户视角：{data.get('purpose') or UNKNOWN}",
+        purpose=f"从用户视角：{as_text(data.get('purpose')) or UNKNOWN}",
         audience=UNKNOWN,
         pain_points=UNKNOWN,
-        revenue=data.get("revenue") or UNKNOWN,
-        ai_tools=data.get("ai_tools") or UNKNOWN,
-        tool_scene_analysis=data.get("reason") or "LLM基于单一来源抽取，需人工复核。",
-        development_time=data.get("development_time") or UNKNOWN,
+        revenue=as_text(data.get("revenue")) or UNKNOWN,
+        ai_tools=as_text(data.get("ai_tools")) or UNKNOWN,
+        tool_scene_analysis=as_text(data.get("reason")) or "LLM基于单一来源抽取，需人工复核。",
+        development_time=as_text(data.get("development_time")) or UNKNOWN,
         sources=source_text([hit]),
         credibility="★ 匿名推测",
         credibility_reason="由可选LLM在预算内基于单一来源抽取，未交叉复核。",
@@ -1201,6 +1292,7 @@ def render_report(
     config: Config,
     budget: BudgetController,
     hit_count: int,
+    api_assist_note: str,
 ) -> str:
     formal = [case for case in all_cases if case.level == "正式案例"]
     candidates = [case for case in all_cases if case.level == "候选案例"]
@@ -1212,6 +1304,7 @@ def render_report(
         f"关键词数量：{len(config.keywords)}；去重搜索结果：{hit_count}条。",
         f"正式案例：{len(formal)}；候选案例：{len(candidates)}；今日线索：{len(clues)}；跳过：{len(skipped)}。",
         f"预算执行：{budget.summary()}",
+        api_assist_note,
         "运行逻辑总结：先用 .env 关键词执行公开网页检索，再用来源触发的保守规则生成正式/候选案例；缺少产品名、用途、来源链接或范围不匹配的内容进入线索池或跳过清单。",
         "结果总结：正式案例不为凑数而扩展范围；收入、开发周期、团队规模等冲突数据保留“存疑出现多个”并列口径。",
         "Agent Instructions 优化建议：后续可要求“正式案例必须同时有产品官网/创始人自述/第三方报道中至少两类来源”，并补充优先国家、产品类型黑名单、最低收入口径要求。",
@@ -1270,8 +1363,9 @@ def run_collection(config: Config, report_date: dt.date) -> tuple[Path, Path, st
     all_cases = known_cases + llm_cases + generic_clues
     all_cases.sort(key=lambda item: ({"正式案例": 0, "候选案例": 1, "今日线索": 2}.get(item.level, 9), item.sort_key))
     assign_case_ids(all_cases)
+    api_assist_note = maybe_llm_review_cases(all_cases, config, budget)
 
-    report_text = render_report(report_date, all_cases, skipped, errors, config, budget, len(hits))
+    report_text = render_report(report_date, all_cases, skipped, errors, config, budget, len(hits), api_assist_note)
     txt_path, doc_path = save_reports(report_text, config.output_dir, report_date)
     return txt_path, doc_path, report_text
 

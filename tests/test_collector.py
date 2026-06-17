@@ -27,6 +27,7 @@ def make_config(tmp_path: Path) -> Config:
         http_timeout_seconds=1,
         request_delay_seconds=0,
         use_llm_extraction=False,
+        require_llm_extraction=False,
         api_key="",
         api_base_url="https://api.example.com",
         llm_model="test-model",
@@ -88,6 +89,7 @@ def test_report_keeps_twenty_numbered_fields(tmp_path: Path) -> None:
         config,
         budget,
         hit_count=1,
+        api_assist_note="API辅助整理：测试未启用。",
     )
     for index, label in enumerate(
         [
