@@ -890,8 +890,19 @@ def should_skip_fetch(url: str) -> bool:
 
 
 def profile_match_count(profile: KnownCaseProfile, hit: SearchHit) -> int:
-    text = hit.combined_text.lower()
-    return sum(1 for term in profile.match_terms if term.lower() in text)
+    primary_text = " ".join([hit.title, hit.url, hit.snippet]).lower()
+    primary_count = sum(1 for term in profile.match_terms if term.lower() in primary_text)
+    if primary_count:
+        return primary_count
+
+    # Page bodies can mention many platforms incidentally. Only use them for
+    # ordinary search results when at least two profile markers appear.
+    if hit.query != "SEED_SOURCE_URLS" and hit.page_text:
+        page_text = hit.page_text.lower()
+        page_count = sum(1 for term in profile.match_terms if term.lower() in page_text)
+        if page_count >= 2:
+            return page_count
+    return 0
 
 
 def extract_known_cases(hits: list[SearchHit], config: Config) -> tuple[list[CaseRecord], set[str]]:
@@ -982,7 +993,7 @@ def generic_clue_from_hit(hit: SearchHit) -> CaseRecord:
 
 
 def build_generic_clues_and_skips(
-    hits: list[SearchHit], consumed_urls: set[str]
+    hits: list[SearchHit], consumed_urls: set[str], allow_fallback: bool = True
 ) -> tuple[list[CaseRecord], list[tuple[str, str, str]]]:
     clues: list[CaseRecord] = []
     skipped: list[tuple[str, str, str]] = []
@@ -1006,7 +1017,7 @@ def build_generic_clues_and_skips(
         if len(clues) >= 8:
             break
 
-    if not clues:
+    if not clues and allow_fallback:
         clues.append(
             make_case(
                 level="今日线索",
@@ -1251,7 +1262,10 @@ def run_collection(config: Config, report_date: dt.date) -> tuple[Path, Path, st
     known_cases, consumed_urls = extract_known_cases(hits, config)
     llm_cases = maybe_llm_extract_extra_clues(hits, config, budget, consumed_urls)
     consumed_urls.update(url for case in llm_cases for url in extract_urls(case.sources))
-    generic_clues, skipped = build_generic_clues_and_skips(hits, consumed_urls)
+    existing_clues = any(case.level == "今日线索" for case in known_cases + llm_cases)
+    generic_clues, skipped = build_generic_clues_and_skips(
+        hits, consumed_urls, allow_fallback=not existing_clues
+    )
 
     all_cases = known_cases + llm_cases + generic_clues
     all_cases.sort(key=lambda item: ({"正式案例": 0, "候选案例": 1, "今日线索": 2}.get(item.level, 9), item.sort_key))
