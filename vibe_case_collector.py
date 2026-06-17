@@ -136,6 +136,7 @@ class CollectorConfig:
     api_key: str
     api_url: str
     model: str
+    llm_temperature: float
     keywords: List[str]
     max_daily_api_budget_cny: float
     input_price_cny_per_1m: float
@@ -158,8 +159,9 @@ class CollectorConfig:
         output_dir = Path(output_dir_override or os.getenv("OUTPUT_DIR", "reports")).expanduser()
         return cls(
             api_key=os.getenv("LLM_API_KEY", "").strip(),
-            api_url=os.getenv("OPENAI_COMPATIBLE_API_URL", "https://api.deepseek.com/chat/completions").strip(),
-            model=os.getenv("LLM_MODEL", "deepseek-chat").strip(),
+            api_url=os.getenv("OPENAI_COMPATIBLE_API_URL", "https://api.moonshot.cn/v1/chat/completions").strip(),
+            model=os.getenv("LLM_MODEL", "kimi-k2.6").strip(),
+            llm_temperature=get_float_env("LLM_TEMPERATURE", 0.0),
             keywords=keywords,
             max_daily_api_budget_cny=get_float_env("MAX_DAILY_API_BUDGET_CNY", 0.1),
             input_price_cny_per_1m=get_float_env("INPUT_TOKEN_PRICE_CNY_PER_1M", 2.0),
@@ -475,7 +477,7 @@ def call_openai_compatible_api(
             {"role": "system", "content": "你只做公开资料结构化抽取，必须输出合法 JSON。"},
             {"role": "user", "content": prompt},
         ],
-        "temperature": 0,
+        "temperature": config.llm_temperature,
         "max_tokens": config.llm_max_output_tokens,
     }
     body = json.dumps(payload, ensure_ascii=False).encode("utf-8")

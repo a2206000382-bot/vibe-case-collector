@@ -88,9 +88,10 @@ copy .env.example .env
 LLM_API_KEY=你的真实API密钥
 OPENAI_COMPATIBLE_API_URL=https://api.moonshot.cn/v1/chat/completions
 LLM_MODEL=kimi-k2.6
+LLM_TEMPERATURE=1
 ```
 
-上面是 Kimi（月之暗面）国内平台密钥常用的 OpenAI 兼容接口。若你的 Kimi 后台显示可用模型不同，把 `LLM_MODEL` 改成后台列出的模型名；若你使用的是国际平台密钥，可把接口改为 `https://api.moonshot.ai/v1/chat/completions`。
+上面是 Kimi（月之暗面）国内平台密钥常用的 OpenAI 兼容接口。`kimi-k2.6` 当前要求 `LLM_TEMPERATURE=1`；若你换成 `moonshot-v1-*` 等模型，可按后台文档改回 `0`。若你的 Kimi 后台显示可用模型不同，把 `LLM_MODEL` 改成后台列出的模型名；若你使用的是国际平台密钥，可把接口改为 `https://api.moonshot.ai/v1/chat/completions`。
 
 ### 第 4 步：运行一次
 
