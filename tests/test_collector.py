@@ -26,6 +26,7 @@ def make_config(tmp_path: Path) -> Config:
         max_fetched_pages=0,
         http_timeout_seconds=1,
         request_delay_seconds=0,
+        print_report_text=True,
         use_llm_extraction=False,
         require_llm_extraction=False,
         api_key="",

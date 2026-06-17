@@ -152,9 +152,18 @@ python3 vibe_case_collector.py --env .env
 ```text
 TXT 已生成：.../reports/vibe_cases_2026-06-17.txt
 DOC 已生成：.../reports/vibe_cases_2026-06-17.doc
+--- 可复制报告文本开始 ---
+这里会完整打印一份可以直接复制的报告正文
+--- 可复制报告文本结束 ---
 ```
 
-打开左侧 `reports` 文件夹，即可查看每日报告。
+打开左侧 `reports` 文件夹，即可查看每日报告。终端里也会同步打印完整可复制文本，方便直接复制给聊天窗口、文档或表格。
+
+如果你只想生成文件、不想在终端打印完整报告，可以运行：
+
+```bash
+python3 vibe_case_collector.py --env .env --no-print-report
+```
 
 ---
 
@@ -390,6 +399,20 @@ MAX_FETCHED_PAGES=18
 ```
 
 零基础建议先不要调太大。网页检索本身不消耗 API token，但太大可能会变慢或被搜索网站限制。
+
+### 8.6 修改是否在终端输出完整报告
+
+默认会输出完整可复制文本，同时保留 `.txt` 和 `.doc` 文件：
+
+```text
+PRINT_REPORT_TEXT=true
+```
+
+如果只想生成文件、不想在终端显示完整报告，改成：
+
+```text
+PRINT_REPORT_TEXT=false
+```
 
 ---
 

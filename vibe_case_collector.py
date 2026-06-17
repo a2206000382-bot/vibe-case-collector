@@ -114,6 +114,7 @@ class Config:
     max_fetched_pages: int
     http_timeout_seconds: float
     request_delay_seconds: float
+    print_report_text: bool
     use_llm_extraction: bool
     require_llm_extraction: bool
     api_key: str
@@ -157,6 +158,7 @@ class Config:
             max_fetched_pages=int(os.getenv("MAX_FETCHED_PAGES", "18") or "18"),
             http_timeout_seconds=float(os.getenv("HTTP_TIMEOUT_SECONDS", "12") or "12"),
             request_delay_seconds=float(os.getenv("REQUEST_DELAY_SECONDS", "0.8") or "0.8"),
+            print_report_text=str_to_bool(os.getenv("PRINT_REPORT_TEXT", "true"), True),
             use_llm_extraction=str_to_bool(os.getenv("USE_LLM_EXTRACTION", "false"), False),
             require_llm_extraction=str_to_bool(os.getenv("REQUIRE_LLM_EXTRACTION", "false"), False),
             api_key=os.getenv("OPENAI_API_KEY", "").strip(),
@@ -1416,6 +1418,7 @@ def parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
     parser.add_argument("--env", default=".env", help="配置文件路径，默认 .env")
     parser.add_argument("--date", default="", help="报告日期 YYYY-MM-DD，默认今天")
     parser.add_argument("--watch", action="store_true", help="常驻定时模式：每天按 RUN_AT_HHMM 自动运行")
+    parser.add_argument("--no-print-report", action="store_true", help="只生成文件，不在终端打印完整可复制报告文本")
     return parser.parse_args(argv)
 
 
@@ -1436,9 +1439,14 @@ def main(argv: Optional[list[str]] = None) -> int:
     txt_path, doc_path, report_text = run_collection(config, report_date)
     print(f"TXT 已生成：{txt_path}")
     print(f"DOC 已生成：{doc_path}")
-    print("\n--- 今日搜索总结预览 ---")
-    summary_match = re.search(r"五、今日搜索总结(.+?)六、下一步建议关键词", report_text, flags=re.S)
-    print(("五、今日搜索总结" + summary_match.group(1)).strip() if summary_match else "报告已生成。")
+    if config.print_report_text and not args.no_print_report:
+        print("\n--- 可复制报告文本开始 ---")
+        print(report_text)
+        print("--- 可复制报告文本结束 ---")
+    else:
+        print("\n--- 今日搜索总结预览 ---")
+        summary_match = re.search(r"五、今日搜索总结(.+?)六、下一步建议关键词", report_text, flags=re.S)
+        print(("五、今日搜索总结" + summary_match.group(1)).strip() if summary_match else "报告已生成。")
     return 0
 
 
