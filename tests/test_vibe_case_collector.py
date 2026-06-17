@@ -3,6 +3,7 @@ import unittest
 from vibe_case_collector import (
     FIELD_SPECS,
     BudgetLedger,
+    is_case_publishable,
     normalize_case,
     render_case,
 )
@@ -42,6 +43,12 @@ class TemplateTests(unittest.TestCase):
         rendered = render_case(normalized)
         self.assertIn("1. 案例编号：1", rendered)
         self.assertIn("17. 机会点（四类各1条，缺一不可）：", rendered)
+
+    def test_publishable_case_requires_disclosed_product_name(self):
+        self.assertFalse(
+            is_case_publishable({"产品名称": "未披露（恋爱测评应用）", "数据来源+链接": "https://example.com"})
+        )
+        self.assertTrue(is_case_publishable({"产品名称": "sensaro.ai", "数据来源+链接": "https://example.com"}))
 
 
 class BudgetTests(unittest.TestCase):

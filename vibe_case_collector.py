@@ -677,7 +677,7 @@ def normalize_case(raw_case: Dict[str, Any], index: int) -> Dict[str, str]:
 def is_case_publishable(case: Dict[str, str]) -> bool:
     product_name = case.get("产品名称", UNDISCLOSED)
     source = case.get("数据来源+链接", "")
-    if product_name == UNDISCLOSED:
+    if product_name == UNDISCLOSED or product_name.startswith(UNDISCLOSED):
         return False
     return bool(re.search(r"https?://", source))
 
