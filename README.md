@@ -86,11 +86,11 @@ copy .env.example .env
 
 ```env
 LLM_API_KEY=你的真实API密钥
-OPENAI_COMPATIBLE_API_URL=https://api.deepseek.com/chat/completions
-LLM_MODEL=deepseek-chat
+OPENAI_COMPATIBLE_API_URL=https://api.moonshot.ai/v1/chat/completions
+LLM_MODEL=moonshot-v1-8k
 ```
 
-如果你使用的不是 DeepSeek，请把 `OPENAI_COMPATIBLE_API_URL` 和 `LLM_MODEL` 改成服务商给你的地址和模型名。
+上面是 Kimi（月之暗面）的 OpenAI 兼容接口。Kimi 官方也可能给你的账号开放 `kimi-k2.6` 等新模型；如果后台显示可用模型不同，把 `LLM_MODEL` 改成后台列出的模型名即可。
 
 ### 第 4 步：运行一次
 
