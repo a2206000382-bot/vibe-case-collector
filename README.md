@@ -76,7 +76,12 @@ Vibe Coding 独立创业案例每日自动采集器。它会按固定字段模�
 python --version
 ```
 
-如果显示 `Python 3.x.x`，说明安装成功。
+如果显示 `Python 3.x.x`，说明安装成功。  
+如果提示找不到 `python`，请改用：
+
+```bash
+python3 --version
+```
 
 ### 第二步：准备配置文件
 
@@ -108,6 +113,12 @@ ENABLE_LLM_ENRICHMENT=true
 python vibe_case_collector.py
 ```
 
+如果提示找不到 `python`，请改用：
+
+```bash
+python3 vibe_case_collector.py
+```
+
 运行结束后，会看到类似提示：
 
 ```text
@@ -128,6 +139,12 @@ python vibe_case_collector.py
 
 ```bash
 python vibe_case_collector.py
+```
+
+如果提示找不到 `python`，把命令改成：
+
+```bash
+python3 vibe_case_collector.py
 ```
 
 5. 回车运行。
@@ -157,6 +174,8 @@ macOS / Linux：
 ```bash
 while true; do python vibe_case_collector.py; sleep 86400; done
 ```
+
+如果系统没有 `python` 命令，把上面的 `python` 改成 `python3`。
 
 说明：这个方式要求 Cursor 和电脑保持运行。关闭电脑或退出 Cursor 后，定时会停止。
 
