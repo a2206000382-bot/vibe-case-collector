@@ -780,7 +780,7 @@ def missing_fields(fields: Dict[str, str]) -> str:
         if key in {"案例编号", "收录级别", "缺失字段", "复核建议"}:
             continue
         value = fields.get(key, "")
-        if not value or value == MISSING or re.fullmatch(r"(?:.*：未披露\n?)+", value):
+        if not value or MISSING in value:
             missing.append(key)
     return "无" if not missing else "、".join(missing)
 
