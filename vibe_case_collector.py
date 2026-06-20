@@ -449,6 +449,10 @@ def collect_search_hits(cfg: Config) -> Tuple[List[SearchHit], List[SkipRecord]]
     hits: List[SearchHit] = []
     skipped: List[SkipRecord] = []
 
+    if cfg.source_urls:
+        # 兜底公开来源通常是人工挑选的高价值链接，优先抓取，避免被搜索广告挤出页数上限。
+        hits.extend(seed_hits_from_source_urls(cfg))
+
     if not cfg.search_keywords:
         skipped.append(SkipRecord("配置缺少 SEARCH_KEYWORDS", "", "未配置搜索关键词，已改用 SOURCE_URLS。"))
 
@@ -458,17 +462,27 @@ def collect_search_hits(cfg: Config) -> Tuple[List[SearchHit], List[SkipRecord]]
         except (urllib.error.URLError, TimeoutError, OSError) as exc:
             skipped.append(SkipRecord(keyword, "", f"搜索失败：{exc}"))
 
-    if cfg.source_urls:
-        hits.extend(seed_hits_from_source_urls(cfg))
-
     unique_hits: List[SearchHit] = []
     seen_urls = set()
     for hit in hits:
         if not hit.url or hit.url in seen_urls:
             continue
+        if should_skip_search_url(hit.url):
+            skipped.append(SkipRecord(hit.title, hit.url, "搜索广告或搜索引擎跳转链接，已跳过。"))
+            continue
         seen_urls.add(hit.url)
         unique_hits.append(hit)
     return unique_hits, skipped
+
+
+def should_skip_search_url(url: str) -> bool:
+    domain = canonical_domain(url)
+    parsed = urllib.parse.urlparse(url)
+    if domain == "duckduckgo.com" and parsed.path.endswith("/y.js"):
+        return True
+    if domain in {"bing.com", "www.bing.com"} and "/aclick" in parsed.path:
+        return True
+    return False
 
 
 def fetch_pages(hits: Sequence[SearchHit], cfg: Config) -> List[PageData]:
@@ -669,7 +683,23 @@ def extract_product_name(title: str, text: str) -> str:
         "6 ",
         "no-code ",
     )
-    if 2 <= len(first_segment) <= 40 and not first_segment.lower().startswith(generic_starts):
+    generic_contains = (
+        "vibe coding",
+        "无代码",
+        "月入",
+        "工具推荐",
+        "什么是",
+        "独立开发者",
+        "ai赋能",
+        "case study",
+        "startup case",
+    )
+    lowered_segment = first_segment.lower()
+    if (
+        2 <= len(first_segment) <= 40
+        and not lowered_segment.startswith(generic_starts)
+        and not any(marker in lowered_segment for marker in generic_contains)
+    ):
         return first_segment
     return MISSING
 
