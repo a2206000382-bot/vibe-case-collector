@@ -1,0 +1,649 @@
+        <html>
+        <head>
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+          <title>Vibe Coding 独立创业案例每日采集报告</title>
+          <style>
+            body { font-family: SimSun, Arial, sans-serif; line-height: 1.6; }
+            .report { white-space: normal; }
+          </style>
+        </head>
+        <body>
+          <div class="report">Vibe Coding 独立创业案例每日采集报告<br>
+日期：2026-06-20<br>
+<br>
+<br>
+一、正式收录案例<br>
+<br>
+1. 案例编号：1<br>
+2. 收录级别：正式案例<br>
+3. 产品名称：AIDesigner<br>
+4. 创始人+编程背景：Tyler Yin（Wiz），设计、AI engineering、曾任 Meta Product Manager；编程背景未披露<br>
+5. 产品类型：SaaS订阅工具<br>
+6. 产品用途：帮助使用 Cursor、Claude Code、Windsurf 等 AI 编码工具的开发者改善 AI 生成应用的界面设计和资产提取工作。<br>
+7. 目标人群：独立开发者、AI Coding 用户、轻量化 SaaS 创业者<br>
+8. 解决痛点：①AI 生成应用界面粗糙；②开发者缺少设计素材和设计判断；③需要把设计改进直接接入本地 AI 编码工作流<br>
+9. 收入模式+MRR/ARR：存疑出现多个：6.8万元人民币（$9,500 USD；原文：$9.5K MRR）；180元人民币（$25 USD；原文：$25/month）；7200元人民币（$1,000 USD；原文：$1k MRR）；6.8万元人民币（$9,500 USD；原文：$9.5k MRR）；4.3万元人民币（$6,000 USD；原文：$6k MRR）<br>
+10. AI工具：Cursor、Claude Code、Claude、Lovable、Windsurf、OpenAI、Anthropic<br>
+11. 工具-场景匹配分析：公开信息显示使用 Cursor、Claude Code、Claude、Lovable、Windsurf、OpenAI、Anthropic；与场景匹配点在于用 AI 编码快速生成界面、后端、支付或工作流集成，支撑轻量 MVP 快速上线。<br>
+12. 开发时间：存疑出现多个：in 30 Days；In just 30 days；in just 9 days；in just 24 hours<br>
+13. 来源+链接：媒体报道/行业文章：https://www.mrrstory.com/stories/from-1k-to-95k-mrr-in-30-days-the-solo-ai-tool-fixing-ugly-vibe-coded-apps<br>
+14. 数据可信度：★★★ 媒体报道<br>
+15. 可信度理由：来源域名 mrrstory.com 属于媒体、行业文章或第三方报道。<br>
+16. 是否单人/小团队：是，solo indie dev（来源自报）<br>
+17. 风险点：合规风险：未披露<br>
+平台依赖风险：依赖 Cursor、Claude Code、Windsurf 等生态集成<br>
+市场竞争风险：设计生成、UI 生成工具竞争密集<br>
+长期运营风险：AI 编码平台能力提升后可能削弱外部设计修复需求<br>
+18. 机会点：横向延伸场景：扩展到更多 UI 框架和设计系统<br>
+纵向功能衔接：从设计修复延伸到代码生成、验收和发布<br>
+B端企业转型：为企业内部 AI 原型提供设计规范化服务<br>
+细分生态位卡位：卡位 AI Coding 工作流中的设计质量层<br>
+19. 缺失字段：创始人+编程背景、风险点<br>
+20. 复核建议：打开来源链接核对产品名称、创始人、收入、开发时间；收入优先寻找公开收入面板、官网公告或创始人原帖。<br>
+<br>
+---<br>
+<br>
+1. 案例编号：2<br>
+2. 收录级别：正式案例<br>
+3. 产品名称：Print Pigeon<br>
+4. 创始人+编程背景：Yannis，希腊数字营销从业者；编程背景未披露<br>
+5. 产品类型：SaaS订阅工具<br>
+6. 产品用途：帮助没有打印机或不方便去邮局的用户在线上传文件、填写地址并完成打印寄信。<br>
+7. 目标人群：海外居住者、远程办公用户、没有打印机的个人用户<br>
+8. 解决痛点：①没有打印机；②附近没有方便邮局；③跨地区寄信流程繁琐<br>
+9. 收入模式+MRR/ARR：支付模式含 Stripe；具体 MRR/ARR 未披露<br>
+10. AI工具：Lovable<br>
+11. 工具-场景匹配分析：公开信息显示使用 Lovable；与场景匹配点在于用 AI 编码快速生成界面、后端、支付或工作流集成，支撑轻量 MVP 快速上线。<br>
+12. 开发时间：存疑出现多个：three days；three months<br>
+13. 来源+链接：官方/产品公开资料：https://lovable.dev/blog/2025-01-17-from-idea-to-impact-yannis-journey-with-lovable<br>
+14. 数据可信度：★★★★ 官方公告<br>
+15. 可信度理由：来源为官网、官方博客、产品页或 GitHub 等一手公开资料。<br>
+16. 是否单人/小团队：未披露，小团队/个人线索<br>
+17. 风险点：合规风险：邮寄文件涉及个人信息和跨境/本地邮政规则<br>
+平台依赖风险：依赖 Lovable、Supabase、Resend、Stripe 等平台<br>
+市场竞争风险：本地打印寄送服务和邮政替代方案可能竞争<br>
+长期运营风险：物流履约、客服和地区覆盖会增加运营复杂度<br>
+18. 机会点：横向延伸场景：扩展到证件、合同、税务信件等寄送场景<br>
+纵向功能衔接：接入模板、电子签名、物流追踪<br>
+B端企业转型：服务远程团队批量寄信和合规通知<br>
+细分生态位卡位：卡位无打印机人群的低频刚需长尾搜索<br>
+19. 缺失字段：创始人+编程背景、收入模式+MRR/ARR、是否单人/小团队<br>
+20. 复核建议：打开来源链接核对产品名称、创始人、收入、开发时间；收入优先寻找公开收入面板、官网公告或创始人原帖。<br>
+<br>
+---<br>
+<br>
+1. 案例编号：3<br>
+2. 收录级别：正式案例<br>
+3. 产品名称：Threshold<br>
+4. 创始人+编程背景：Julia Starr，职业教练；编程背景无/未披露<br>
+5. 产品类型：SaaS订阅工具<br>
+6. 产品用途：帮助职业转型用户按职业教练方法获得职业选择、定位和下一步行动建议。<br>
+7. 目标人群：职场办公、职业转型人群、职业教练潜在客户<br>
+8. 解决痛点：①职业转型缺少低门槛指导；②一对一教练服务价格较高；③创始人方法论难以规模化触达<br>
+9. 收入模式+MRR/ARR：一次性买断/付费门槛，公开价格 $29；具体 MRR/ARR 未披露<br>
+10. AI工具：Claude、Lovable、ChatGPT<br>
+11. 工具-场景匹配分析：公开信息显示使用 Claude、Lovable、ChatGPT；与场景匹配点在于用 AI 编码快速生成界面、后端、支付或工作流集成，支撑轻量 MVP 快速上线。<br>
+12. 开发时间：存疑出现多个：in 60 days；two days<br>
+13. 来源+链接：媒体报道/行业文章：https://www.businessinsider.com/career-coach-vibe-code-ai-app-lovable-passive-income-2026-4<br>
+14. 数据可信度：★★★ 媒体报道<br>
+15. 可信度理由：来源域名 businessinsider.com 属于媒体、行业文章或第三方报道。<br>
+16. 是否单人/小团队：是，创始人个人方法论产品化<br>
+17. 风险点：合规风险：职业建议可能影响用户重大决策，需要避免过度承诺<br>
+平台依赖风险：依赖 Lovable 和支付/托管平台<br>
+市场竞争风险：AI 职业教练、简历工具、真人咨询服务竞争<br>
+长期运营风险：内容方法论需要持续更新并处理用户反馈<br>
+18. 机会点：横向延伸场景：扩展到简历、面试、转行课程<br>
+纵向功能衔接：从自助工具衔接高客单价教练服务<br>
+B端企业转型：面向企业员工发展和转岗辅导<br>
+细分生态位卡位：卡位特定职业转型方法论的自助产品<br>
+19. 缺失字段：创始人+编程背景、收入模式+MRR/ARR<br>
+20. 复核建议：打开来源链接核对产品名称、创始人、收入、开发时间；收入优先寻找公开收入面板、官网公告或创始人原帖。<br>
+<br>
+二、候选案例<br>
+无<br>
+<br>
+三、今日线索池<br>
+<br>
+1. 案例编号：4<br>
+2. 收录级别：今日线索<br>
+3. 产品名称：未披露<br>
+4. 创始人+编程背景：未披露<br>
+5. 产品类型：API服务<br>
+6. 产品用途：与 Vibe Coding / AI Coding / 独立开发相关的公开线索：How I Launched 14 SaaS Products in 6 Months as a Solo Builder Using Lovable - DEV Community<br>
+7. 目标人群：未披露<br>
+8. 解决痛点：未披露<br>
+9. 收入模式+MRR/ARR：720元人民币（$100 USD；原文：$100/month）<br>
+10. AI工具：Claude、Lovable、ChatGPT、OpenAI、Anthropic<br>
+11. 工具-场景匹配分析：公开信息显示使用 Claude、Lovable、ChatGPT、OpenAI、Anthropic；与场景匹配点在于用 AI 编码快速生成界面、后端、支付或工作流集成，支撑轻量 MVP 快速上线。<br>
+12. 开发时间：存疑出现多个：in 6 Months；in 6 months；2-3 days；Three days<br>
+13. 来源+链接：创始人社交平台/开发者社区：https://dev.to/jakub_inithouse/how-i-launched-14-saas-products-in-6-months-as-a-solo-founder-using-lovable-3hdm<br>
+14. 数据可信度：★★ 创始人自报<br>
+15. 可信度理由：来源疑似创始人本人发布、访谈或个人社区内容。<br>
+16. 是否单人/小团队：未披露<br>
+17. 风险点：合规风险：未披露<br>
+平台依赖风险：未披露<br>
+市场竞争风险：未披露<br>
+长期运营风险：未披露<br>
+18. 机会点：横向延伸场景：未披露<br>
+纵向功能衔接：未披露<br>
+B端企业转型：未披露<br>
+细分生态位卡位：未披露<br>
+19. 缺失字段：产品名称、创始人+编程背景、目标人群、解决痛点、是否单人/小团队、风险点、机会点<br>
+20. 复核建议：打开来源链接核对产品名称、创始人、收入、开发时间；收入优先寻找公开收入面板、官网公告或创始人原帖。<br>
+<br>
+---<br>
+<br>
+1. 案例编号：5<br>
+2. 收录级别：今日线索<br>
+3. 产品名称：未披露<br>
+4. 创始人+编程背景：未披露<br>
+5. 产品类型：SaaS订阅工具<br>
+6. 产品用途：与 Vibe Coding / AI Coding / 独立开发相关的公开线索：https://blog.stackademic.com/i-built-a-saas-in-3-days-using-claude-code-it-makes-2-400-month-heres-the-entire-process-0af017932f9c<br>
+7. 目标人群：未披露<br>
+8. 解决痛点：未披露<br>
+9. 收入模式+MRR/ARR：未披露<br>
+10. AI工具：Claude<br>
+11. 工具-场景匹配分析：公开信息显示使用 Claude；与场景匹配点在于用 AI 编码快速生成界面、后端、支付或工作流集成，支撑轻量 MVP 快速上线。<br>
+12. 开发时间：未披露<br>
+13. 来源+链接：媒体报道/行业文章：https://blog.stackademic.com/i-built-a-saas-in-3-days-using-claude-code-it-makes-2-400-month-heres-the-entire-process-0af017932f9c<br>
+14. 数据可信度：★★★ 媒体报道<br>
+15. 可信度理由：来源域名 blog.stackademic.com 属于媒体、行业文章或第三方报道。<br>
+16. 是否单人/小团队：未披露<br>
+17. 风险点：合规风险：未披露<br>
+平台依赖风险：未披露<br>
+市场竞争风险：未披露<br>
+长期运营风险：未披露<br>
+18. 机会点：横向延伸场景：未披露<br>
+纵向功能衔接：未披露<br>
+B端企业转型：未披露<br>
+细分生态位卡位：未披露<br>
+19. 缺失字段：产品名称、创始人+编程背景、目标人群、解决痛点、收入模式+MRR/ARR、开发时间、是否单人/小团队、风险点、机会点<br>
+20. 复核建议：打开来源链接核对产品名称、创始人、收入、开发时间；收入优先寻找公开收入面板、官网公告或创始人原帖。<br>
+<br>
+---<br>
+<br>
+1. 案例编号：6<br>
+2. 收录级别：今日线索<br>
+3. 产品名称：未披露<br>
+4. 创始人+编程背景：未披露<br>
+5. 产品类型：未披露<br>
+6. 产品用途：与 Vibe Coding / AI Coding / 独立开发相关的公开线索：AI赋能：一人公司如何借助 Vibe Coding 实现 10 倍加速与创新（含真实创业案例）<br>
+7. 目标人群：未披露<br>
+8. 解决痛点：未披露<br>
+9. 收入模式+MRR/ARR：未披露<br>
+10. AI工具：未披露<br>
+11. 工具-场景匹配分析：未披露<br>
+12. 开发时间：未披露<br>
+13. 来源+链接：公开网页：https://zhuanlan.zhihu.com/p/1912060239915758858<br>
+14. 数据可信度：★ 匿名推测<br>
+15. 可信度理由：来源未能确认是否为官方、媒体或创始人本人，需要人工复核。<br>
+16. 是否单人/小团队：未披露<br>
+17. 风险点：合规风险：未披露<br>
+平台依赖风险：未披露<br>
+市场竞争风险：未披露<br>
+长期运营风险：未披露<br>
+18. 机会点：横向延伸场景：未披露<br>
+纵向功能衔接：未披露<br>
+B端企业转型：未披露<br>
+细分生态位卡位：未披露<br>
+19. 缺失字段：产品名称、创始人+编程背景、产品类型、目标人群、解决痛点、收入模式+MRR/ARR、AI工具、工具-场景匹配分析、开发时间、是否单人/小团队、风险点、机会点<br>
+20. 复核建议：打开来源链接核对产品名称、创始人、收入、开发时间；收入优先寻找公开收入面板、官网公告或创始人原帖。<br>
+<br>
+---<br>
+<br>
+1. 案例编号：7<br>
+2. 收录级别：今日线索<br>
+3. 产品名称：未披露<br>
+4. 创始人+编程背景：未披露<br>
+5. 产品类型：未披露<br>
+6. 产品用途：与 Vibe Coding / AI Coding / 独立开发相关的公开线索：独立开发者：连续30天Vibe Coding的实战经验与收获_vibe coding学习规划-CSDN博客<br>
+7. 目标人群：未披露<br>
+8. 解决痛点：未披露<br>
+9. 收入模式+MRR/ARR：未披露<br>
+10. AI工具：未披露<br>
+11. 工具-场景匹配分析：未披露<br>
+12. 开发时间：30天<br>
+13. 来源+链接：公开网页：https://blog.csdn.net/dtsola/article/details/154902624<br>
+14. 数据可信度：★ 匿名推测<br>
+15. 可信度理由：来源未能确认是否为官方、媒体或创始人本人，需要人工复核。<br>
+16. 是否单人/小团队：未披露<br>
+17. 风险点：合规风险：未披露<br>
+平台依赖风险：未披露<br>
+市场竞争风险：未披露<br>
+长期运营风险：未披露<br>
+18. 机会点：横向延伸场景：未披露<br>
+纵向功能衔接：未披露<br>
+B端企业转型：未披露<br>
+细分生态位卡位：未披露<br>
+19. 缺失字段：产品名称、创始人+编程背景、产品类型、目标人群、解决痛点、收入模式+MRR/ARR、AI工具、工具-场景匹配分析、是否单人/小团队、风险点、机会点<br>
+20. 复核建议：打开来源链接核对产品名称、创始人、收入、开发时间；收入优先寻找公开收入面板、官网公告或创始人原帖。<br>
+<br>
+---<br>
+<br>
+1. 案例编号：8<br>
+2. 收录级别：今日线索<br>
+3. 产品名称：未披露<br>
+4. 创始人+编程背景：未披露<br>
+5. 产品类型：免费开源工具<br>
+6. 产品用途：与 Vibe Coding / AI Coding / 独立开发相关的公开线索：最近Vibe Coding的经验总结 - 少数派<br>
+7. 目标人群：未披露<br>
+8. 解决痛点：未披露<br>
+9. 收入模式+MRR/ARR：未披露<br>
+10. AI工具：Cursor、Claude<br>
+11. 工具-场景匹配分析：公开信息显示使用 Cursor、Claude；与场景匹配点在于用 AI 编码快速生成界面、后端、支付或工作流集成，支撑轻量 MVP 快速上线。<br>
+12. 开发时间：未披露<br>
+13. 来源+链接：公开网页：https://sspai.com/post/101542<br>
+14. 数据可信度：★ 匿名推测<br>
+15. 可信度理由：来源未能确认是否为官方、媒体或创始人本人，需要人工复核。<br>
+16. 是否单人/小团队：未披露<br>
+17. 风险点：合规风险：未披露<br>
+平台依赖风险：未披露<br>
+市场竞争风险：未披露<br>
+长期运营风险：未披露<br>
+18. 机会点：横向延伸场景：未披露<br>
+纵向功能衔接：未披露<br>
+B端企业转型：未披露<br>
+细分生态位卡位：未披露<br>
+19. 缺失字段：产品名称、创始人+编程背景、目标人群、解决痛点、收入模式+MRR/ARR、开发时间、是否单人/小团队、风险点、机会点<br>
+20. 复核建议：打开来源链接核对产品名称、创始人、收入、开发时间；收入优先寻找公开收入面板、官网公告或创始人原帖。<br>
+<br>
+---<br>
+<br>
+1. 案例编号：9<br>
+2. 收录级别：今日线索<br>
+3. 产品名称：未披露<br>
+4. 创始人+编程背景：未披露<br>
+5. 产品类型：未披露<br>
+6. 产品用途：与 Vibe Coding / AI Coding / 独立开发相关的公开线索：Vibe Coding零基础一周做三个成果：步骤拆解-腾讯云开发者社区-腾讯云<br>
+7. 目标人群：未披露<br>
+8. 解决痛点：未披露<br>
+9. 收入模式+MRR/ARR：未披露<br>
+10. AI工具：未披露<br>
+11. 工具-场景匹配分析：未披露<br>
+12. 开发时间：未披露<br>
+13. 来源+链接：公开网页：https://cloud.tencent.com/developer/article/2668296<br>
+14. 数据可信度：★ 匿名推测<br>
+15. 可信度理由：来源未能确认是否为官方、媒体或创始人本人，需要人工复核。<br>
+16. 是否单人/小团队：未披露<br>
+17. 风险点：合规风险：未披露<br>
+平台依赖风险：未披露<br>
+市场竞争风险：未披露<br>
+长期运营风险：未披露<br>
+18. 机会点：横向延伸场景：未披露<br>
+纵向功能衔接：未披露<br>
+B端企业转型：未披露<br>
+细分生态位卡位：未披露<br>
+19. 缺失字段：产品名称、创始人+编程背景、产品类型、目标人群、解决痛点、收入模式+MRR/ARR、AI工具、工具-场景匹配分析、开发时间、是否单人/小团队、风险点、机会点<br>
+20. 复核建议：打开来源链接核对产品名称、创始人、收入、开发时间；收入优先寻找公开收入面板、官网公告或创始人原帖。<br>
+<br>
+---<br>
+<br>
+1. 案例编号：10<br>
+2. 收录级别：今日线索<br>
+3. 产品名称：未披露<br>
+4. 创始人+编程背景：未披露<br>
+5. 产品类型：API服务<br>
+6. 产品用途：与 Vibe Coding / AI Coding / 独立开发相关的公开线索：什么是 Vibe Coding？2026 年非技术创始人如何构建 SaaS 产品 - Y Build<br>
+7. 目标人群：未披露<br>
+8. 解决痛点：未披露<br>
+9. 收入模式+MRR/ARR：未披露<br>
+10. AI工具：Cursor、Claude、Lovable、Bolt.new、GPT-5<br>
+11. 工具-场景匹配分析：公开信息显示使用 Cursor、Claude、Lovable、Bolt.new、GPT-5；与场景匹配点在于用 AI 编码快速生成界面、后端、支付或工作流集成，支撑轻量 MVP 快速上线。<br>
+12. 开发时间：存疑出现多个：3 天；6 个月；7 天<br>
+13. 来源+链接：公开网页：https://ybuild.ai/zh/blog/vibe-coding-build-saas-without-technical-skills-2026<br>
+14. 数据可信度：★ 匿名推测<br>
+15. 可信度理由：来源未能确认是否为官方、媒体或创始人本人，需要人工复核。<br>
+16. 是否单人/小团队：未披露<br>
+17. 风险点：合规风险：未披露<br>
+平台依赖风险：未披露<br>
+市场竞争风险：未披露<br>
+长期运营风险：未披露<br>
+18. 机会点：横向延伸场景：未披露<br>
+纵向功能衔接：未披露<br>
+B端企业转型：未披露<br>
+细分生态位卡位：未披露<br>
+19. 缺失字段：产品名称、创始人+编程背景、目标人群、解决痛点、收入模式+MRR/ARR、是否单人/小团队、风险点、机会点<br>
+20. 复核建议：打开来源链接核对产品名称、创始人、收入、开发时间；收入优先寻找公开收入面板、官网公告或创始人原帖。<br>
+<br>
+---<br>
+<br>
+1. 案例编号：11<br>
+2. 收录级别：今日线索<br>
+3. 产品名称：未披露<br>
+4. 创始人+编程背景：未披露<br>
+5. 产品类型：API服务<br>
+6. 产品用途：与 Vibe Coding / AI Coding / 独立开发相关的公开线索：MonkeyCode Vibe Coding：不会写代码也能做产品，这不是梦 - 我佛糍粑1122 - 博客园<br>
+7. 目标人群：未披露<br>
+8. 解决痛点：未披露<br>
+9. 收入模式+MRR/ARR：未披露<br>
+10. AI工具：未披露<br>
+11. 工具-场景匹配分析：未披露<br>
+12. 开发时间：存疑出现多个：3天；2周；2小时；5天<br>
+13. 来源+链接：公开网页：https://www.cnblogs.com/wofociba/p/20565208<br>
+14. 数据可信度：★ 匿名推测<br>
+15. 可信度理由：来源未能确认是否为官方、媒体或创始人本人，需要人工复核。<br>
+16. 是否单人/小团队：未披露<br>
+17. 风险点：合规风险：未披露<br>
+平台依赖风险：未披露<br>
+市场竞争风险：未披露<br>
+长期运营风险：未披露<br>
+18. 机会点：横向延伸场景：未披露<br>
+纵向功能衔接：未披露<br>
+B端企业转型：未披露<br>
+细分生态位卡位：未披露<br>
+19. 缺失字段：产品名称、创始人+编程背景、目标人群、解决痛点、收入模式+MRR/ARR、AI工具、工具-场景匹配分析、是否单人/小团队、风险点、机会点<br>
+20. 复核建议：打开来源链接核对产品名称、创始人、收入、开发时间；收入优先寻找公开收入面板、官网公告或创始人原帖。<br>
+<br>
+---<br>
+<br>
+1. 案例编号：12<br>
+2. 收录级别：今日线索<br>
+3. 产品名称：未披露<br>
+4. 创始人+编程背景：未披露<br>
+5. 产品类型：未披露<br>
+6. 产品用途：与 Vibe Coding / AI Coding / 独立开发相关的公开线索：无代码还是 Vibe Coding？9 大工具推荐 - 知乎<br>
+7. 目标人群：未披露<br>
+8. 解决痛点：未披露<br>
+9. 收入模式+MRR/ARR：未披露<br>
+10. AI工具：未披露<br>
+11. 工具-场景匹配分析：未披露<br>
+12. 开发时间：未披露<br>
+13. 来源+链接：公开网页：https://zhuanlan.zhihu.com/p/1945796825517896939<br>
+14. 数据可信度：★ 匿名推测<br>
+15. 可信度理由：来源未能确认是否为官方、媒体或创始人本人，需要人工复核。<br>
+16. 是否单人/小团队：未披露<br>
+17. 风险点：合规风险：未披露<br>
+平台依赖风险：未披露<br>
+市场竞争风险：未披露<br>
+长期运营风险：未披露<br>
+18. 机会点：横向延伸场景：未披露<br>
+纵向功能衔接：未披露<br>
+B端企业转型：未披露<br>
+细分生态位卡位：未披露<br>
+19. 缺失字段：产品名称、创始人+编程背景、产品类型、目标人群、解决痛点、收入模式+MRR/ARR、AI工具、工具-场景匹配分析、开发时间、是否单人/小团队、风险点、机会点<br>
+20. 复核建议：打开来源链接核对产品名称、创始人、收入、开发时间；收入优先寻找公开收入面板、官网公告或创始人原帖。<br>
+<br>
+---<br>
+<br>
+1. 案例编号：13<br>
+2. 收录级别：今日线索<br>
+3. 产品名称：未披露<br>
+4. 创始人+编程背景：未披露<br>
+5. 产品类型：未披露<br>
+6. 产品用途：与 Vibe Coding / AI Coding / 独立开发相关的公开线索：【全网首发】2026 Vibe Coding实战教程：工具+案例+资料+黑客松一站式搞定!_vibe coding教程-CSDN博客<br>
+7. 目标人群：未披露<br>
+8. 解决痛点：未披露<br>
+9. 收入模式+MRR/ARR：未披露<br>
+10. AI工具：未披露<br>
+11. 工具-场景匹配分析：未披露<br>
+12. 开发时间：未披露<br>
+13. 来源+链接：公开网页：https://blog.csdn.net/weixin_43662565/article/details/158011614<br>
+14. 数据可信度：★ 匿名推测<br>
+15. 可信度理由：来源未能确认是否为官方、媒体或创始人本人，需要人工复核。<br>
+16. 是否单人/小团队：未披露<br>
+17. 风险点：合规风险：未披露<br>
+平台依赖风险：未披露<br>
+市场竞争风险：未披露<br>
+长期运营风险：未披露<br>
+18. 机会点：横向延伸场景：未披露<br>
+纵向功能衔接：未披露<br>
+B端企业转型：未披露<br>
+细分生态位卡位：未披露<br>
+19. 缺失字段：产品名称、创始人+编程背景、产品类型、目标人群、解决痛点、收入模式+MRR/ARR、AI工具、工具-场景匹配分析、开发时间、是否单人/小团队、风险点、机会点<br>
+20. 复核建议：打开来源链接核对产品名称、创始人、收入、开发时间；收入优先寻找公开收入面板、官网公告或创始人原帖。<br>
+<br>
+---<br>
+<br>
+1. 案例编号：14<br>
+2. 收录级别：今日线索<br>
+3. 产品名称：未披露<br>
+4. 创始人+编程背景：未披露<br>
+5. 产品类型：免费开源工具<br>
+6. 产品用途：与 Vibe Coding / AI Coding / 独立开发相关的公开线索：2026 年 vibe coding、AI Coding、无代码编程、AI 建网站工具 TOP10 深度体验 - IT之家<br>
+7. 目标人群：未披露<br>
+8. 解决痛点：未披露<br>
+9. 收入模式+MRR/ARR：未披露<br>
+10. AI工具：Cursor、Claude Code、Claude、Lovable、Bolt.new、Windsurf<br>
+11. 工具-场景匹配分析：公开信息显示使用 Cursor、Claude Code、Claude、Lovable、Bolt.new、Windsurf；与场景匹配点在于用 AI 编码快速生成界面、后端、支付或工作流集成，支撑轻量 MVP 快速上线。<br>
+12. 开发时间：未披露<br>
+13. 来源+链接：公开网页：https://www.ithome.com/0/947/331.htm<br>
+14. 数据可信度：★ 匿名推测<br>
+15. 可信度理由：来源未能确认是否为官方、媒体或创始人本人，需要人工复核。<br>
+16. 是否单人/小团队：未披露<br>
+17. 风险点：合规风险：未披露<br>
+平台依赖风险：未披露<br>
+市场竞争风险：未披露<br>
+长期运营风险：未披露<br>
+18. 机会点：横向延伸场景：未披露<br>
+纵向功能衔接：未披露<br>
+B端企业转型：未披露<br>
+细分生态位卡位：未披露<br>
+19. 缺失字段：产品名称、创始人+编程背景、目标人群、解决痛点、收入模式+MRR/ARR、开发时间、是否单人/小团队、风险点、机会点<br>
+20. 复核建议：打开来源链接核对产品名称、创始人、收入、开发时间；收入优先寻找公开收入面板、官网公告或创始人原帖。<br>
+<br>
+---<br>
+<br>
+1. 案例编号：15<br>
+2. 收录级别：今日线索<br>
+3. 产品名称：未披露<br>
+4. 创始人+编程背景：未披露<br>
+5. 产品类型：免费开源工具<br>
+6. 产品用途：与 Vibe Coding / AI Coding / 独立开发相关的公开线索：Vibe Coding - AI驱动的自然语言编程 | 让创意自由流动<br>
+7. 目标人群：未披露<br>
+8. 解决痛点：未披露<br>
+9. 收入模式+MRR/ARR：未披露<br>
+10. AI工具：Cursor、Claude、Replit Agent、ChatGPT、GPT-4、OpenAI、Anthropic<br>
+11. 工具-场景匹配分析：公开信息显示使用 Cursor、Claude、Replit Agent、ChatGPT、GPT-4、OpenAI、Anthropic；与场景匹配点在于用 AI 编码快速生成界面、后端、支付或工作流集成，支撑轻量 MVP 快速上线。<br>
+12. 开发时间：未披露<br>
+13. 来源+链接：公开网页：https://vibecodingcn.cn/index.html<br>
+14. 数据可信度：★ 匿名推测<br>
+15. 可信度理由：来源未能确认是否为官方、媒体或创始人本人，需要人工复核。<br>
+16. 是否单人/小团队：未披露<br>
+17. 风险点：合规风险：未披露<br>
+平台依赖风险：未披露<br>
+市场竞争风险：未披露<br>
+长期运营风险：未披露<br>
+18. 机会点：横向延伸场景：未披露<br>
+纵向功能衔接：未披露<br>
+B端企业转型：未披露<br>
+细分生态位卡位：未披露<br>
+19. 缺失字段：产品名称、创始人+编程背景、目标人群、解决痛点、收入模式+MRR/ARR、开发时间、是否单人/小团队、风险点、机会点<br>
+20. 复核建议：打开来源链接核对产品名称、创始人、收入、开发时间；收入优先寻找公开收入面板、官网公告或创始人原帖。<br>
+<br>
+---<br>
+<br>
+1. 案例编号：16<br>
+2. 收录级别：今日线索<br>
+3. 产品名称：未披露<br>
+4. 创始人+编程背景：未披露<br>
+5. 产品类型：未披露<br>
+6. 产品用途：与 Vibe Coding / AI Coding / 独立开发相关的公开线索：月入9万，已经有大学生用 Vibe Coding捞到第一桶金了_腾讯新闻<br>
+7. 目标人群：未披露<br>
+8. 解决痛点：未披露<br>
+9. 收入模式+MRR/ARR：未披露<br>
+10. AI工具：Cursor、Claude Code、Claude、Lovable、DeepSeek、ChatGPT、OpenAI<br>
+11. 工具-场景匹配分析：公开信息显示使用 Cursor、Claude Code、Claude、Lovable、DeepSeek、ChatGPT、OpenAI；与场景匹配点在于用 AI 编码快速生成界面、后端、支付或工作流集成，支撑轻量 MVP 快速上线。<br>
+12. 开发时间：未披露<br>
+13. 来源+链接：公开网页：https://news.qq.com/rain/a/20260210A0387G00<br>
+14. 数据可信度：★ 匿名推测<br>
+15. 可信度理由：来源未能确认是否为官方、媒体或创始人本人，需要人工复核。<br>
+16. 是否单人/小团队：未披露<br>
+17. 风险点：合规风险：未披露<br>
+平台依赖风险：未披露<br>
+市场竞争风险：未披露<br>
+长期运营风险：未披露<br>
+18. 机会点：横向延伸场景：未披露<br>
+纵向功能衔接：未披露<br>
+B端企业转型：未披露<br>
+细分生态位卡位：未披露<br>
+19. 缺失字段：产品名称、创始人+编程背景、产品类型、目标人群、解决痛点、收入模式+MRR/ARR、开发时间、是否单人/小团队、风险点、机会点<br>
+20. 复核建议：打开来源链接核对产品名称、创始人、收入、开发时间；收入优先寻找公开收入面板、官网公告或创始人原帖。<br>
+<br>
+---<br>
+<br>
+1. 案例编号：17<br>
+2. 收录级别：今日线索<br>
+3. 产品名称：未披露<br>
+4. 创始人+编程背景：未披露<br>
+5. 产品类型：未披露<br>
+6. 产品用途：与 Vibe Coding / AI Coding / 独立开发相关的公开线索：Vibe Coding：普通人做 AI 创业的最后一张入场券？ - 知乎<br>
+7. 目标人群：未披露<br>
+8. 解决痛点：未披露<br>
+9. 收入模式+MRR/ARR：未披露<br>
+10. AI工具：未披露<br>
+11. 工具-场景匹配分析：未披露<br>
+12. 开发时间：未披露<br>
+13. 来源+链接：公开网页：https://zhuanlan.zhihu.com/p/2003654380797333590<br>
+14. 数据可信度：★ 匿名推测<br>
+15. 可信度理由：来源未能确认是否为官方、媒体或创始人本人，需要人工复核。<br>
+16. 是否单人/小团队：未披露<br>
+17. 风险点：合规风险：未披露<br>
+平台依赖风险：未披露<br>
+市场竞争风险：未披露<br>
+长期运营风险：未披露<br>
+18. 机会点：横向延伸场景：未披露<br>
+纵向功能衔接：未披露<br>
+B端企业转型：未披露<br>
+细分生态位卡位：未披露<br>
+19. 缺失字段：产品名称、创始人+编程背景、产品类型、目标人群、解决痛点、收入模式+MRR/ARR、AI工具、工具-场景匹配分析、开发时间、是否单人/小团队、风险点、机会点<br>
+20. 复核建议：打开来源链接核对产品名称、创始人、收入、开发时间；收入优先寻找公开收入面板、官网公告或创始人原帖。<br>
+<br>
+---<br>
+<br>
+1. 案例编号：18<br>
+2. 收录级别：今日线索<br>
+3. 产品名称：未披露<br>
+4. 创始人+编程背景：未披露<br>
+5. 产品类型：未披露<br>
+6. 产品用途：与 Vibe Coding / AI Coding / 独立开发相关的公开线索：2026实测｜个人AI编程入门完整指南，vibe coding副业实战全记录-CSDN博客<br>
+7. 目标人群：未披露<br>
+8. 解决痛点：未披露<br>
+9. 收入模式+MRR/ARR：未披露<br>
+10. AI工具：未披露<br>
+11. 工具-场景匹配分析：未披露<br>
+12. 开发时间：未披露<br>
+13. 来源+链接：公开网页：https://blog.csdn.net/mmy_12/article/details/162126477<br>
+14. 数据可信度：★ 匿名推测<br>
+15. 可信度理由：来源未能确认是否为官方、媒体或创始人本人，需要人工复核。<br>
+16. 是否单人/小团队：未披露<br>
+17. 风险点：合规风险：未披露<br>
+平台依赖风险：未披露<br>
+市场竞争风险：未披露<br>
+长期运营风险：未披露<br>
+18. 机会点：横向延伸场景：未披露<br>
+纵向功能衔接：未披露<br>
+B端企业转型：未披露<br>
+细分生态位卡位：未披露<br>
+19. 缺失字段：产品名称、创始人+编程背景、产品类型、目标人群、解决痛点、收入模式+MRR/ARR、AI工具、工具-场景匹配分析、开发时间、是否单人/小团队、风险点、机会点<br>
+20. 复核建议：打开来源链接核对产品名称、创始人、收入、开发时间；收入优先寻找公开收入面板、官网公告或创始人原帖。<br>
+<br>
+---<br>
+<br>
+1. 案例编号：19<br>
+2. 收录级别：今日线索<br>
+3. 产品名称：未披露<br>
+4. 创始人+编程背景：未披露<br>
+5. 产品类型：未披露<br>
+6. 产品用途：与 Vibe Coding / AI Coding / 独立开发相关的公开线索：2026年最靠谱的11个程序员兼职接单平台，Vibe Coding时代副业赚钱指南! - 知乎<br>
+7. 目标人群：未披露<br>
+8. 解决痛点：未披露<br>
+9. 收入模式+MRR/ARR：未披露<br>
+10. AI工具：未披露<br>
+11. 工具-场景匹配分析：未披露<br>
+12. 开发时间：未披露<br>
+13. 来源+链接：公开网页：https://zhuanlan.zhihu.com/p/2045212551261291721<br>
+14. 数据可信度：★ 匿名推测<br>
+15. 可信度理由：来源未能确认是否为官方、媒体或创始人本人，需要人工复核。<br>
+16. 是否单人/小团队：未披露<br>
+17. 风险点：合规风险：未披露<br>
+平台依赖风险：未披露<br>
+市场竞争风险：未披露<br>
+长期运营风险：未披露<br>
+18. 机会点：横向延伸场景：未披露<br>
+纵向功能衔接：未披露<br>
+B端企业转型：未披露<br>
+细分生态位卡位：未披露<br>
+19. 缺失字段：产品名称、创始人+编程背景、产品类型、目标人群、解决痛点、收入模式+MRR/ARR、AI工具、工具-场景匹配分析、开发时间、是否单人/小团队、风险点、机会点<br>
+20. 复核建议：打开来源链接核对产品名称、创始人、收入、开发时间；收入优先寻找公开收入面板、官网公告或创始人原帖。<br>
+<br>
+---<br>
+<br>
+1. 案例编号：20<br>
+2. 收录级别：今日线索<br>
+3. 产品名称：未披露<br>
+4. 创始人+编程背景：未披露<br>
+5. 产品类型：未披露<br>
+6. 产品用途：与 Vibe Coding / AI Coding / 独立开发相关的公开线索：vibe coding接单全攻略：2026年十大平台实战评测 - 知乎<br>
+7. 目标人群：未披露<br>
+8. 解决痛点：未披露<br>
+9. 收入模式+MRR/ARR：未披露<br>
+10. AI工具：未披露<br>
+11. 工具-场景匹配分析：未披露<br>
+12. 开发时间：未披露<br>
+13. 来源+链接：公开网页：https://zhuanlan.zhihu.com/p/2026270463941252484<br>
+14. 数据可信度：★ 匿名推测<br>
+15. 可信度理由：来源未能确认是否为官方、媒体或创始人本人，需要人工复核。<br>
+16. 是否单人/小团队：未披露<br>
+17. 风险点：合规风险：未披露<br>
+平台依赖风险：未披露<br>
+市场竞争风险：未披露<br>
+长期运营风险：未披露<br>
+18. 机会点：横向延伸场景：未披露<br>
+纵向功能衔接：未披露<br>
+B端企业转型：未披露<br>
+细分生态位卡位：未披露<br>
+19. 缺失字段：产品名称、创始人+编程背景、产品类型、目标人群、解决痛点、收入模式+MRR/ARR、AI工具、工具-场景匹配分析、开发时间、是否单人/小团队、风险点、机会点<br>
+20. 复核建议：打开来源链接核对产品名称、创始人、收入、开发时间；收入优先寻找公开收入面板、官网公告或创始人原帖。<br>
+<br>
+四、跳过案例清单<br>
+1. Top 5 Free Vibe Coding Tools - Recommended - June 2026｜https://duckduckgo.com/y.js?ad_domain=cybernews.com&amp;ad_provider=bingv7aa&amp;ad_type=txad&amp;click_metadata=hNDD%2DotfYs%2DTU4o8G3vS8MnImYoCi6pzggoYzDXAjmlJ91c9htgyzw2PmX7d64cE_v8f7AbxGSv%2DAL8DtyynaC6sven99QOdKemjncqGQxkDySQMCzBnL61x8aDnBIjIHVADsyqdd_5b3CMh3vJbDSPh48rMbmhPmBs4cWYoD0o.vFVsBPSLm_MVhfx75lavVQ&amp;rut=29a76acc5c6afa2451c588dfa598f9d314f30effe4106d593b722a6121668318&amp;u3=https%3A%2F%2Fwww.bing.com%2Faclick%3Fld%3De8TRgcZq6k17cvPtgT06DJGTVUCUyf_BcwLrBy_lkjrnDRn9yJhMWmAG0fwuqEzaj5j7pWOdcTFCAjwK3A5Vq6Rm5Grc4kbzjjldmnAz5DESnSQIw%2DQw8x0gUGcYaSG87ZDYXhu7rnf7YrclONNswgXVuwcXvVHK1sqvWS83z9TCPKW33c3Mz3SiadGpz6XUs3GF9ACDFx801aATBnnWifCTHel0E%26u%3DaHR0cHMlM2ElMmYlMmZ1cy5jeWJlcm5ld3MuY29tJTJmbHAlMmZiZXN0LWFpLWFwcC1idWlsZGVycy0xJTJmdmliZS1jb2RpbmclMmYlM2Z1dG1fc291cmNlJTNkYmluZyUyNnV0bV9tZWRpdW0lM2RjcGMlMjZ1dG1fY2FtcGFpZ24lM2RCSU5HX0NOX0FJLVdFQi1BUFBfUy1QX1QxX1VTX0ZfQWxsLURldmljZXNfRW5nbGlzaCUyNnV0bV9jb250ZW50JTNkODIyNTc2MTA3NDUzODAlMjZ1dG1fdGVybSUzZGZyZWUlMjUyMHZpYmUlMjUyMGNvZGluZyUyNTIwYXBwcyUyNnV0bV9pZCUzZDY4ODgxNTM4NyUyNmNhbXBhaWduSWQlM2Q2ODg4MTUzODclMjZhZGdyb3VwSWQlM2QxMzE2MTE3OTU5NTM5MTIzJTI2YWRJZCUzZDgyMjU3NjEwNzQ1MzgwJTI2dGFyZ2V0SWQlM2Rrd2QtODIyNTg2ODEwOTQ4ODUlM2Fsb2MtMTkwJTI2ZGV2aWNlJTNkYyUyNm11bmlxdWUlM2QwNDM5ODJjMWQwNmMxMWZkYjhmNGU4Zjc5YTFiMDYzNiUyNnNvdXJjZSUzZGJpbmclMjZtZWRpdW0lM2RjcGMlMjZjYW1wYWlnbiUzZEJJTkdfQ05fQUktV0VCLUFQUF9TLVBfVDFfVVNfRl9BbGwtRGV2aWNlc19FbmdsaXNoJTI2Y29udGVudCUzZDgyMjU3NjEwNzQ1MzgwJTI2dGVybSUzZGZyZWUlMjUyMHZpYmUlMjUyMGNvZGluZyUyNTIwYXBwcyUyNm1zY2xraWQlM2QwNDM5ODJjMWQwNmMxMWZkYjhmNGU4Zjc5YTFiMDYzNg%26rlid%3D043982c1d06c11fdb8f4e8f79a1b0636&amp;vqd=4-320952014135343449009370242644661255831&amp;iurl=%7B1%7DIG%3DB1CA599E13D0410DA342EF9B6E74F183%26CID%3D0677ED28522C62B203ACFA5653A76394%26ID%3DDevEx%2C5045.1<br>
+   跳过原因：搜索广告或搜索引擎跳转链接，已跳过。<br>
+2. https://blog.stackademic.com/i-built-a-saas-in-3-days-using-claude-code-it-makes-2-400-month-heres-the-entire-process-0af017932f9c｜https://blog.stackademic.com/i-built-a-saas-in-3-days-using-claude-code-it-makes-2-400-month-heres-the-entire-process-0af017932f9c<br>
+   跳过原因：页面抓取失败，仅保留为线索：HTTP Error 403: Forbidden<br>
+3. AI赋能：一人公司如何借助 Vibe Coding 实现 10 倍加速与创新（含真实创业案例）｜https://zhuanlan.zhihu.com/p/1912060239915758858<br>
+   跳过原因：页面抓取失败，仅保留为线索：HTTP Error 403: Forbidden<br>
+4. 独立开发者：连续30天Vibe Coding的实战经验与收获_vibe coding学习规划-CSDN博客｜https://blog.csdn.net/dtsola/article/details/154902624<br>
+   跳过原因：页面抓取失败，仅保留为线索：HTTP Error 521: <br>
+5. 无代码还是 Vibe Coding？9 大工具推荐 - 知乎｜https://zhuanlan.zhihu.com/p/1945796825517896939<br>
+   跳过原因：页面抓取失败，仅保留为线索：HTTP Error 403: Forbidden<br>
+6. 【全网首发】2026 Vibe Coding实战教程：工具+案例+资料+黑客松一站式搞定!_vibe coding教程-CSDN博客｜https://blog.csdn.net/weixin_43662565/article/details/158011614<br>
+   跳过原因：页面抓取失败，仅保留为线索：HTTP Error 521: <br>
+7. Vibe Coding：普通人做 AI 创业的最后一张入场券？ - 知乎｜https://zhuanlan.zhihu.com/p/2003654380797333590<br>
+   跳过原因：页面抓取失败，仅保留为线索：HTTP Error 403: Forbidden<br>
+8. 2026实测｜个人AI编程入门完整指南，vibe coding副业实战全记录-CSDN博客｜https://blog.csdn.net/mmy_12/article/details/162126477<br>
+   跳过原因：页面抓取失败，仅保留为线索：HTTP Error 521: <br>
+9. 2026年最靠谱的11个程序员兼职接单平台，Vibe Coding时代副业赚钱指南! - 知乎｜https://zhuanlan.zhihu.com/p/2045212551261291721<br>
+   跳过原因：页面抓取失败，仅保留为线索：HTTP Error 403: Forbidden<br>
+10. vibe coding接单全攻略：2026年十大平台实战评测 - 知乎｜https://zhuanlan.zhihu.com/p/2026270463941252484<br>
+   跳过原因：页面抓取失败，仅保留为线索：HTTP Error 403: Forbidden<br>
+<br>
+五、今日搜索总结<br>
+今日搜索总结：<br>
+- 正式收录案例：3 个<br>
+- 候选案例：0 个<br>
+- 今日线索：17 个<br>
+- 跳过/需人工复核来源：10 条<br>
+- LLM 启用状态：未启用或未配置 API key<br>
+- 今日 API 预算上限：0.10 元人民币<br>
+- 今日已预估占用：0.0000 元人民币<br>
+- 预算控制逻辑：每次大模型调用前按字符数估算 token 和人民币成本；预计超过单日上限时立即停止后续大模型提取。<br>
+- 结果说明：正式案例不凑数；产品名称或来源不足的内容降级为候选案例/今日线索，缺失字段统一填写“未披露”。<br>
+<br>
+六、下一步建议关键词<br>
+- AIDesigner MRR Cursor Claude Code<br>
+- Print Pigeon Lovable Yannis revenue<br>
+- Threshold Julia Starr Lovable app revenue<br>
+- vibe coded app passive income founder<br>
+- site:indiehackers.com Cursor SaaS revenue<br>
+- site:dev.to Lovable solo founder SaaS revenue<br>
+- Claude Code indie SaaS MRR founder<br>
+- AI coding tool founder revenue MRR Cursor<br>
+<br>
+Agent Instructions 优化建议<br>
+- 继续强调“正式案例可以为 0，不允许无来源凑数”。<br>
+- 建议增加优先站点白名单，例如创始人博客、Indie Hackers、Product Hunt、GitHub、Business Insider、MRR Story。<br>
+- 建议要求每周人工复核一次收入换算汇率和 LLM token 单价配置，保证 0.1 元预算阈值仍准确。<br>
+- 如果需要更高召回率，可在 .env 增加付费搜索 API，但仍保持 LLM 预算锁定。<br>
+</div>
+        </body>
+        </html>
