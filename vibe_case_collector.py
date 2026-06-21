@@ -361,12 +361,17 @@ def is_generic_article(result: SearchResult) -> bool:
         "best ",
         "工具推荐",
         "横向对比",
+        "横评",
         "comparison",
         "vs.",
         "教程",
         "guide",
+        "指南",
         "学习规划",
         "实战经验",
+        "实战教程",
+        "实战全记录",
+        "实战演示",
         "普通人",
         "入场券",
         "理念",
@@ -375,6 +380,19 @@ def is_generic_article(result: SearchResult) -> bool:
         "how to",
         "如何",
         "一站式搞定",
+        "不会写代码",
+        "自然语言编程",
+        "从零代码",
+        "超级个体",
+        "接单平台",
+        "副业赚钱",
+        "完整方案",
+        "深度实测",
+        "ai编程入门",
+        "工具清单",
+        "工具盘点",
+        "快速搭建",
+        "月入过万",
     ]
     product_case_signals = [
         "case study",
@@ -582,6 +600,8 @@ def credibility_for(result: SearchResult) -> Tuple[str, str]:
 
 def classify_result(result: SearchResult, product_name: str, usage: str, credibility: str) -> str:
     text = f"{result.title} {result.snippet} {result.url}".lower()
+    if result.source_keyword == "SEED_URLS":
+        return LEVEL_LEAD
     if is_generic_article(result):
         return LEVEL_LEAD
     has_case_signal = any(
@@ -609,7 +629,11 @@ def classify_result(result: SearchResult, product_name: str, usage: str, credibi
     )
     if has_case_signal and has_required_formal:
         return LEVEL_FORMAL
-    if product_name != CN_UNDISCLOSED and usage != CN_UNDISCLOSED:
+    if (
+        product_name != CN_UNDISCLOSED
+        and usage != CN_UNDISCLOSED
+        and detect_product_type(result) != CN_UNDISCLOSED
+    ):
         return LEVEL_CANDIDATE
     return LEVEL_LEAD
 
