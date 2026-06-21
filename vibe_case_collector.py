@@ -393,6 +393,13 @@ def is_generic_article(result: SearchResult) -> bool:
         "工具盘点",
         "快速搭建",
         "月入过万",
+        "micro saas",
+        "打工人",
+        "启动你的",
+        "增长总监",
+        "测评",
+        "估值",
+        "打法",
     ]
     product_case_signals = [
         "case study",
