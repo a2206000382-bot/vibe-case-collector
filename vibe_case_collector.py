@@ -403,11 +403,6 @@ def is_generic_article(result: SearchResult) -> bool:
     ]
     product_case_signals = [
         "case study",
-        "mrr",
-        "arr",
-        "revenue",
-        "月收入",
-        "公开收入",
         "built with cursor",
         "built with claude",
         "ship with cursor",
