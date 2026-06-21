@@ -337,7 +337,65 @@ def is_relevant(result: SearchResult) -> bool:
     return any(signal in text for signal in signals)
 
 
+def is_ad_or_tracking_link(result: SearchResult) -> bool:
+    url = result.url.lower()
+    domain = domain_from_url(result.url)
+    ad_signals = [
+        "duckduckgo.com/y.js",
+        "bing.com/aclick",
+        "ad_domain=",
+        "ad_provider=",
+        "utm_medium=cpc",
+        "utm_campaign=bing",
+    ]
+    return domain in {"duckduckgo.com", "bing.com"} or any(signal in url for signal in ad_signals)
+
+
+def is_generic_article(result: SearchResult) -> bool:
+    text = f"{result.title} {result.snippet}".lower()
+    generic_signals = [
+        "what is",
+        "什么是",
+        "top 5",
+        "top 10",
+        "best ",
+        "工具推荐",
+        "横向对比",
+        "comparison",
+        "vs.",
+        "教程",
+        "guide",
+        "学习规划",
+        "实战经验",
+        "普通人",
+        "入场券",
+        "理念",
+        "概念",
+        "趋势",
+        "how to",
+        "如何",
+        "一站式搞定",
+    ]
+    product_case_signals = [
+        "case study",
+        "mrr",
+        "arr",
+        "revenue",
+        "月收入",
+        "公开收入",
+        "built with cursor",
+        "built with claude",
+        "ship with cursor",
+    ]
+    if any(signal in text for signal in product_case_signals):
+        return False
+    return any(signal in text for signal in generic_signals)
+
+
 def extract_product_name(result: SearchResult) -> str:
+    if is_generic_article(result):
+        domain = domain_from_url(result.url)
+        return domain.split(".")[0] if domain else CN_UNDISCLOSED
     title = result.title.strip()
     separators = [" | ", " - ", " — ", " – ", ": "]
     candidate = title
@@ -524,6 +582,8 @@ def credibility_for(result: SearchResult) -> Tuple[str, str]:
 
 def classify_result(result: SearchResult, product_name: str, usage: str, credibility: str) -> str:
     text = f"{result.title} {result.snippet} {result.url}".lower()
+    if is_generic_article(result):
+        return LEVEL_LEAD
     has_case_signal = any(
         token in text
         for token in [
@@ -545,6 +605,7 @@ def classify_result(result: SearchResult, product_name: str, usage: str, credibi
         and usage != CN_UNDISCLOSED
         and bool(result.url)
         and credibility != "★ 匿名推测"
+        and detect_product_type(result) != CN_UNDISCLOSED
     )
     if has_case_signal and has_required_formal:
         return LEVEL_FORMAL
@@ -752,6 +813,9 @@ def collect_cases(config: CollectorConfig, report_date: dt.date) -> Tuple[List[C
             skipped.append(SkippedItem(result.title, result.url, "重复产品或重复来源，已跳过。"))
             continue
         seen.add(key)
+        if is_ad_or_tracking_link(result):
+            skipped.append(SkippedItem(result.title, result.url, "搜索广告或跟踪跳转链接，已跳过。"))
+            continue
         if not is_relevant(result):
             skipped.append(SkippedItem(result.title, result.url, "与 Vibe Coding / AI Coding / 独立开发 / AI SaaS 相关性不足。"))
             continue
