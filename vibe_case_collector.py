@@ -98,11 +98,36 @@ CONCEPT_PATTERNS = [
     r"vibe\s+coding\s+is",
     r"trend",
     r"tutorial",
+    r"tools?\s+for\s+vibe\s+coding",
     r"指南",
     r"教程",
     r"是什么",
     r"趋势",
     r"概念",
+    r"工具选型",
+    r"入门",
+    r"推荐",
+    r"TOP\s?\d+",
+    r"top\s?\d+",
+]
+
+ARTICLE_TITLE_PATTERNS = [
+    r"指南",
+    r"教程",
+    r"经验总结",
+    r"工具选型",
+    r"深度体验",
+    r"推荐",
+    r"盘点",
+    r"榜单",
+    r"步骤拆解",
+    r"什么是",
+    r"how\s+to",
+    r"what\s+is",
+    r"podcast|播客",
+    r"blog|博客",
+    r"article|文章",
+    r"TOP\s?\d+|top\s?\d+",
 ]
 
 MEDIA_DOMAINS = [
@@ -117,6 +142,9 @@ MEDIA_DOMAINS = [
     "medium.com",
     "latent.space",
     "a16z.com",
+    "sspai.com",
+    "36kr.com",
+    "ithome.com",
 ]
 
 FOUNDER_DOMAINS = [
@@ -131,8 +159,6 @@ FOUNDER_DOMAINS = [
 OFFICIAL_DOMAINS = [
     "github.com",
     "gitlab.com",
-    "docs.",
-    "blog.",
 ]
 
 
@@ -475,6 +501,10 @@ def contains_any(patterns: Sequence[str], text: str) -> bool:
     return any(re.search(pattern, text, re.I) for pattern in patterns)
 
 
+def looks_like_article_title(title: str) -> bool:
+    return contains_any(ARTICLE_TITLE_PATTERNS, title)
+
+
 def extract_ai_tools(text: str) -> str:
     tools = [name for name, pattern in AI_TOOL_PATTERNS.items() if re.search(pattern, text, re.I)]
     return "、".join(dict.fromkeys(tools)) if tools else UNKNOWN
@@ -636,15 +666,22 @@ def classify(result: SearchResult) -> Tuple[str, str]:
     text = result.combined_text
     if not contains_any(RELATED_PATTERNS, text):
         return "", "与 Vibe Coding / AI Coding / 独立开发 / AI SaaS 主题关联不足"
+    title = result.title or ""
+    is_concept = contains_any(CONCEPT_PATTERNS, text) or looks_like_article_title(title)
     has_productish = bool(re.search(r"\b(app|tool|SaaS|startup|product|extension|API)\b|工具|应用|项目|产品", text, re.I))
     has_case_signal = bool(re.search(r"\b(built|launched|shipped|founder|solo|MRR|ARR|revenue)\b|上线|收入|创始|变现", text, re.I))
-    is_concept = contains_any(CONCEPT_PATTERNS, text)
-    if has_productish and has_case_signal and not is_concept:
+    has_name_signal = bool(
+        re.search(r"Product\s+Hunt|GitHub\s+-|launch(?:ed|es)?\s+[A-Z][\w.-]+|built\s+[A-Z][\w.-]+", text, re.I)
+        or (title and not looks_like_article_title(title) and len(title) <= 90)
+    )
+    if is_concept:
+        return LEAD, "相关内容偏概念、教程、盘点或经验文章，不作为案例收录"
+    if has_productish and has_case_signal and has_name_signal:
         cred, _reason = credibility(result.url, text)
-        if cred.startswith("★★") or cred.startswith("★★★") or cred.startswith("★★★★"):
+        if cred.startswith("★★★") or cred.startswith("★★★★"):
             return FORMAL, ""
-        return CANDIDATE, "来源可信度不足以进入正式案例"
-    if has_productish:
+        return CANDIDATE, "产品案例信号存在，但来源可信度或关键字段不足以进入正式案例"
+    if has_productish and has_name_signal:
         return CANDIDATE, "产品或用途有线索，但创始人、收入、开发时间等字段不足"
     return LEAD, "仅作为相关线索，尚未确认具体产品案例"
 
