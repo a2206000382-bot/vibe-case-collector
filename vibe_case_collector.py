@@ -121,6 +121,10 @@ ARTICLE_TITLE_PATTERNS = [
     r"盘点",
     r"榜单",
     r"步骤拆解",
+    r"完整方案",
+    r"横评",
+    r"详解",
+    r"赚钱",
     r"什么是",
     r"how\s+to",
     r"what\s+is",
@@ -721,6 +725,31 @@ def build_case(result: SearchResult, level: str, usd_to_cny: float, llm_data: Di
     return case
 
 
+def enforce_collection_rules(case: Dict[str, str]) -> None:
+    """Keep formal/candidate sections strict after all fields are extracted."""
+    product_name = case.get("产品名称", UNKNOWN)
+    purpose = case.get("产品用途", UNKNOWN)
+    source = case.get("来源+链接", UNKNOWN)
+    credibility_value = case.get("数据可信度", UNKNOWN)
+    article_like = looks_like_article_title(product_name)
+    if case.get("收录级别") == FORMAL:
+        required_missing = (
+            product_name == UNKNOWN
+            or purpose == UNKNOWN
+            or source == UNKNOWN
+            or credibility_value == UNKNOWN
+            or article_like
+        )
+        if required_missing:
+            case["收录级别"] = CANDIDATE if purpose != UNKNOWN and not article_like else LEAD
+            case["复核建议"] = "正式案例字段不足或标题偏文章型，已自动降级；请人工确认是否存在具体产品案例。"
+    if case.get("收录级别") == CANDIDATE:
+        if product_name == UNKNOWN or purpose == UNKNOWN or article_like:
+            case["收录级别"] = LEAD
+            case["复核建议"] = "候选案例必须具备明确产品名称和用途；当前信息不足，已自动降级为今日线索。"
+    case["缺失字段"] = find_missing_fields(case)
+
+
 def collect_search_results(env: Dict[str, str]) -> Tuple[List[SearchResult], List[str]]:
     keywords = split_multi(get_setting(env, "SEARCH_KEYWORDS")) + split_multi(get_setting(env, "SEARCH_KEYWORDS_EN"))
     source_urls = split_multi(get_setting(env, "SOURCE_URLS"))
@@ -807,7 +836,9 @@ def collect_cases(env: Dict[str, str]) -> Tuple[List[Dict[str, str]], List[Dict[
             continue
         seen_names.add(name_key)
         llm_data = llm.enrich(result)
-        cases.append(build_case(result, level, usd_to_cny, llm_data))
+        case = build_case(result, level, usd_to_cny, llm_data)
+        enforce_collection_rules(case)
+        cases.append(case)
     if not any(case["收录级别"] in {CANDIDATE, LEAD} for case in cases) and results:
         fallback = results[0]
         cases.append(build_case(fallback, LEAD, usd_to_cny, {}))
