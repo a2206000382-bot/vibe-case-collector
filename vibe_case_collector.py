@@ -245,6 +245,18 @@ def canonical_url(url: str) -> str:
     return urllib.parse.urlunparse(rebuilt)
 
 
+def is_search_ad_url(url: str) -> bool:
+    parsed = urllib.parse.urlparse(url)
+    domain = parsed.netloc.lower()
+    path = parsed.path.lower()
+    query = parsed.query.lower()
+    return (
+        ("duckduckgo.com" in domain and ("/y.js" in path or "ad_domain=" in query))
+        or ("bing.com" in domain and "/aclick" in path)
+        or "utm_campaign=bing" in query
+    )
+
+
 def domain_of(url: str) -> str:
     return urllib.parse.urlparse(url).netloc.lower().removeprefix("www.")
 
@@ -772,7 +784,7 @@ def collect_search_results(env: Dict[str, str]) -> Tuple[List[SearchResult], Lis
             if provider_results:
                 break
         for item in provider_results:
-            if not item.url or item.url in seen_urls:
+            if not item.url or item.url in seen_urls or is_search_ad_url(item.url):
                 continue
             seen_urls.add(item.url)
             all_results.append(item)
